@@ -1,1 +1,1003 @@
+<!DOCTYPE html>
+<html lang="nl">
 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rekenburcht - Verdedig met Wiskunde!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #0f172a;
+            --bg-panel: rgba(30, 41, 59, 0.9);
+            --accent-primary: #8b5cf6;
+            /* Violet */
+            --accent-secondary: #06b6d4;
+            /* Cyan */
+            --accent-gold: #f59e0b;
+            --accent-danger: #ef4444;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Outfit', sans-serif;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            user-select: none;
+        }
+
+        #game-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            max-width: 1280px;
+            max-height: 720px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            background: #1e293b;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* UI Overlay Elements */
+        .ui-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            /* Let clicks pass through to canvas by default */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* Top HUD */
+        .hud-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .stat-card {
+            background: var(--bg-panel);
+            backdrop-filter: blur(10px);
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: var(--glass-border);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 100px;
+        }
+
+        .stat-label {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-secondary);
+        }
+
+        .stat-value.gold {
+            color: var(--accent-gold);
+        }
+
+        .stat-value.danger {
+            color: var(--accent-danger);
+        }
+
+        /* Bank Button */
+        #bank-btn {
+            pointer-events: auto;
+            background: linear-gradient(135deg, var(--accent-gold), #d97706);
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+            transition: transform 0.1s, box-shadow 0.1s;
+            animation: pulse-gold 2s infinite;
+        }
+
+        #bank-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.6);
+        }
+
+        #bank-btn:active {
+            transform: scale(0.95);
+        }
+
+        @keyframes pulse-gold {
+            0% {
+                box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4);
+            }
+
+            70% {
+                box-shadow: 0 0 0 10px rgba(245, 158, 11, 0);
+            }
+
+            100% {
+                box-shadow: 0 0 0 0 rgba(245, 158, 11, 0);
+            }
+        }
+
+        /* Math Modal */
+        #math-modal {
+            display: none;
+            /* Hidden by default */
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(5px);
+            justify-content: center;
+            align-items: center;
+            pointer-events: auto;
+            z-index: 100;
+        }
+
+        .modal-content {
+            background: var(--bg-panel);
+            padding: 40px;
+            border-radius: 16px;
+            border: 1px solid var(--accent-primary);
+            box-shadow: 0 0 50px rgba(139, 92, 246, 0.3);
+            text-align: center;
+            width: 400px;
+            max-width: 90%;
+        }
+
+        .question {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .answer-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 2rem;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid var(--accent-primary);
+            border-radius: 8px;
+            color: white;
+            outline: none;
+            margin-bottom: 20px;
+        }
+
+        .answer-input:focus {
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.3);
+        }
+
+        /* Towers Selector (Bottom) */
+        .towers-panel {
+            pointer-events: auto;
+            display: flex;
+            gap: 15px;
+            background: var(--bg-panel);
+            padding: 15px;
+            border-radius: 12px;
+            border: var(--glass-border);
+            align-self: center;
+        }
+
+        .tower-card {
+            width: 70px;
+            height: 90px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+
+        .tower-card:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .tower-card.selected {
+            border-color: var(--accent-secondary);
+            background: rgba(6, 182, 212, 0.1);
+        }
+
+        .tower-icon {
+            width: 40px;
+            height: 40px;
+            margin-bottom: 5px;
+            background: #ddd;
+            /* Placeholder */
+            border-radius: 50%;
+        }
+
+        .tower-cost {
+            font-size: 0.9rem;
+            color: var(--accent-gold);
+            font-weight: bold;
+        }
+
+        /* Start Screen */
+        #start-screen {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-dark);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+        }
+
+        h1 {
+            font-size: 4rem;
+            margin-bottom: 10px;
+            background: linear-gradient(to right, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .start-btn {
+            background: var(--accent-primary);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-family: inherit;
+            font-weight: bold;
+        }
+
+        .start-btn:hover {
+            background: #7c3aed;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="game-container">
+        <canvas id="gameCanvas"></canvas>
+
+        <div class="ui-layer" id="game-ui" style="display: none;">
+            <div class="hud-top">
+                <div class="stat-card">
+                    <span class="stat-label">Levens</span>
+                    <span class="stat-value danger" id="lives-display">20</span>
+                </div>
+
+                <button id="bank-btn">IK WIL GELD! (SOMMEN)</button>
+                <button id="panic-btn"
+                    style="background: linear-gradient(135deg, #ef4444, #b91c1c); margin-left:10px; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);">MEGA
+                    LASER</button>
+
+                <div class="stat-card">
+                    <span class="stat-label">Goud</span>
+                    <span class="stat-value gold" id="gold-display">0</span>
+                </div>
+            </div>
+
+            <div class="towers-panel">
+                <div class="tower-card selected" onclick="selectTower(1)">
+                    <div class="tower-icon" style="background: cyan;"></div>
+                    <div class="tower-cost">50</div>
+                </div>
+                <div class="tower-card" onclick="selectTower(2)">
+                    <div class="tower-icon" style="background: orange;"></div>
+                    <div class="tower-cost">120</div>
+                </div>
+                <div class="tower-card" onclick="selectTower(3)">
+                    <div class="tower-icon" style="background: purple;"></div>
+                    <div class="tower-cost">250</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Math Modal -->
+        <div id="math-modal">
+            <div class="modal-content">
+                <h2 style="margin-top:0; color:var(--accent-secondary);">Los op voor Geld!</h2>
+                <div class="question" id="math-question">...</div>
+                <input type="number" class="answer-input" id="math-answer" placeholder="?" autocomplete="off">
+                <div id="feedback-msg" style="height: 20px; color: var(--accent-gold);"></div>
+            </div>
+        </div>
+
+        <!-- Start Screen -->
+        <div id="start-screen">
+            <h1>REKENBURCHT</h1>
+            <p style="font-size: 1.2rem; margin-bottom: 40px; color: var(--text-muted);">Verdedig de burcht met de
+                kracht van wiskunde!</p>
+            <button class="start-btn" onclick="startGame()">START HET SPEL</button>
+        </div>
+    </div>
+
+    <script>
+        // --- Configuration ---
+        const CONFIG = {
+            canvasWidth: 1280,
+            canvasHeight: 720,
+            fps: 60,
+            gridSize: 64
+        };
+
+        // --- State Management ---
+        const State = {
+            gold: 100,
+            lives: 20,
+            wave: 1,
+            isRunning: false,
+            isPaused: false,
+            towers: [],
+            enemies: [],
+            projectiles: [],
+            particles: [],
+            currentProblem: null
+        };
+
+        // --- Game Engine ---
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Resize handling to keep aspect ratio
+        function resize() {
+            // Simple fit for now, can be improved later
+            canvas.width = CONFIG.canvasWidth;
+            canvas.height = CONFIG.canvasHeight;
+        }
+        resize();
+
+        class GameEntity {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.markedForDeletion = false;
+            }
+            update() { }
+            draw(ctx) { }
+        }
+
+        class MathEngine {
+            static generateProblem(tier) {
+                let problem = {};
+
+                // Tier 1: Add/Subtract (Wave 1-3)
+                if (tier === 1) {
+                    const isAdd = Math.random() > 0.5;
+                    if (isAdd) {
+                        const a = Math.floor(Math.random() * 10) + 1;
+                        const b = Math.floor(Math.random() * 10) + 1;
+                        problem = {
+                            question: `${a} + ${b} = ?`,
+                            answer: a + b,
+                            type: 'standard'
+                        };
+                    } else {
+                        const a = Math.floor(Math.random() * 10) + 5; // Ensure result is positive
+                        const b = Math.floor(Math.random() * 5) + 1;
+                        problem = {
+                            question: `${a} - ${b} = ?`,
+                            answer: a - b,
+                            type: 'standard'
+                        };
+                    }
+                }
+                // Tier 2: Multiplication (Wave 4-6)
+                else if (tier === 2) {
+                    const a = Math.floor(Math.random() * 10) + 1;
+                    const b = Math.floor(Math.random() * 10) + 1;
+                    problem = {
+                        question: `${a} x ${b} = ?`,
+                        answer: a * b,
+                        type: 'standard'
+                    };
+                }
+                // Tier 3: Fill in the blank (Wave 7-10)
+                else if (tier === 3) {
+                    const a = Math.floor(Math.random() * 12) + 2;
+                    const b = Math.floor(Math.random() * 12) + 2;
+                    const c = a + b;
+                    // "5 + ... = 13"
+                    problem = {
+                        question: `${a} + ... = ${c}`,
+                        answer: b,
+                        type: 'standard'
+                    };
+                }
+                // Tier 4: Estimation / Boss (Wave 10+)
+                else if (tier >= 4) {
+                    // Generates larger sums, asks Yes/No (1 for Yes, 0 for No) implicitly or simplify for now
+                    // Let's stick to standard math but harder for now to keep input simple number pad
+                    const a = Math.floor(Math.random() * 50) + 20;
+                    const b = Math.floor(Math.random() * 50) + 20;
+                    const isAdd = Math.random() > 0.5;
+                    if (isAdd) {
+                        problem = {
+                            question: `${a} + ${b} = ?`,
+                            answer: a + b,
+                            type: 'standard'
+                        };
+                    } else {
+                        const res = Math.floor(Math.random() * 100);
+                        const start = res + Math.floor(Math.random() * 50);
+                        problem = {
+                            question: `${start} - ... = ${res}`,
+                            answer: start - res,
+                            type: 'standard'
+                        };
+                    }
+                }
+
+                return problem;
+            }
+
+            // Helper to determine tier from wave
+            static getTier(wave) {
+                if (wave <= 3) return 1;
+                if (wave <= 6) return 2;
+                if (wave <= 10) return 3;
+                return 4;
+            }
+        }
+
+        // --- Map & Pathfinding ---
+        const Path = [
+            { x: 0, y: 360 },
+            { x: 300, y: 360 },
+            { x: 300, y: 150 },
+            { x: 600, y: 150 },
+            { x: 600, y: 500 },
+            { x: 900, y: 500 },
+            { x: 900, y: 360 },
+            { x: 1280, y: 360 }
+        ];
+
+        class Enemy extends GameEntity {
+            constructor(wave) {
+                super(Path[0].x, Path[0].y);
+                this.waypointIndex = 0;
+                this.speed = 1.5 + (wave * 0.1);
+                this.hp = 10 + (wave * 5);
+                this.maxHp = this.hp;
+                this.radius = 15;
+                this.color = '#ef4444';
+                this.bounty = 0; // No gold on kill!
+            }
+
+            update() {
+                // Move towards next waypoint
+                if (this.waypointIndex >= Path.length - 1) {
+                    // Reached end
+                    State.lives -= 1;
+                    updateStats();
+                    this.markedForDeletion = true;
+                    return;
+                }
+
+                const target = Path[this.waypointIndex + 1];
+                const dx = target.x - this.x;
+                const dy = target.y - this.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist < 5) {
+                    this.waypointIndex++;
+                } else {
+                    this.x += (dx / dist) * this.speed;
+                    this.y += (dy / dist) * this.speed;
+                }
+            }
+
+            draw(ctx) {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fill();
+
+                // HP Bar
+                const barWidth = 30;
+                const hpPct = this.hp / this.maxHp;
+                ctx.fillStyle = 'red';
+                ctx.fillRect(this.x - barWidth / 2, this.y - 25, barWidth, 4);
+                ctx.fillStyle = '#22c55e';
+                ctx.fillRect(this.x - barWidth / 2, this.y - 25, barWidth * hpPct, 4);
+            }
+
+            takeDamage(amount) {
+                this.hp -= amount;
+                if (this.hp <= 0) {
+                    this.markedForDeletion = true;
+                    spawnParticles(this.x, this.y, '#ef4444', 10);
+                }
+            }
+        }
+
+        class Particle extends GameEntity {
+            constructor(x, y, color, speed, life) {
+                super(x, y);
+                this.color = color;
+                this.vx = (Math.random() - 0.5) * speed;
+                this.vy = (Math.random() - 0.5) * speed;
+                this.life = life;
+                this.maxLife = life;
+                this.size = Math.random() * 3 + 1;
+            }
+
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                this.life--;
+                if (this.life <= 0) this.markedForDeletion = true;
+            }
+
+            draw(ctx) {
+                ctx.globalAlpha = this.life / this.maxLife;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.globalAlpha = 1.0;
+            }
+        }
+
+        function spawnParticles(x, y, color, count) {
+            for (let i = 0; i < count; i++) {
+                State.particles.push(new Particle(x, y, color, 5, 40));
+            }
+        }
+
+        class Projectile extends GameEntity {
+            constructor(x, y, target, damage, speed, color) {
+                super(x, y);
+                this.target = target;
+                this.damage = damage;
+                this.speed = speed;
+                this.color = color;
+                this.radius = 4;
+            }
+
+            update() {
+                // Homing missile logic simple
+                if (this.target.markedForDeletion) {
+                    this.markedForDeletion = true;
+                    return;
+                }
+
+                const dx = this.target.x - this.x;
+                const dy = this.target.y - this.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist < 10) {
+                    this.target.takeDamage(this.damage);
+                    this.markedForDeletion = true;
+                    spawnParticles(this.x, this.y, this.color, 3);
+                } else {
+                    this.x += (dx / dist) * this.speed;
+                    this.y += (dy / dist) * this.speed;
+                }
+            }
+
+            draw(ctx) {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        class Tower extends GameEntity {
+            constructor(x, y, type) {
+                super(x, y);
+                this.type = type;
+                this.range = 150;
+                this.cooldown = 0;
+                this.maxCooldown = 60;
+                this.damage = 2;
+
+                // Stats based on Type
+                if (type === 1) { // Basic
+                    this.range = 120;
+                    this.maxCooldown = 40;
+                    this.damage = 3;
+                    this.color = 'cyan';
+                } else if (type === 2) { // Sniper
+                    this.range = 300;
+                    this.maxCooldown = 120;
+                    this.damage = 10;
+                    this.color = 'orange';
+                } else if (type === 3) { // Rapid
+                    this.range = 100;
+                    this.maxCooldown = 15;
+                    this.damage = 1;
+                    this.color = 'purple';
+                }
+            }
+
+            update() {
+                if (this.cooldown > 0) this.cooldown--;
+
+                if (this.cooldown <= 0) {
+                    const target = this.findTarget();
+                    if (target) {
+                        this.shoot(target);
+                        this.cooldown = this.maxCooldown;
+                    }
+                }
+            }
+
+            findTarget() {
+                // Find closest enemy
+                let closest = null;
+                let minDst = Infinity;
+
+                for (const enemy of State.enemies) {
+                    const dx = enemy.x - this.x;
+                    const dy = enemy.y - this.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+
+                    if (dist < this.range && dist < minDst) {
+                        closest = enemy;
+                        minDst = dist;
+                    }
+                }
+                return closest;
+            }
+
+            shoot(target) {
+                State.projectiles.push(new Projectile(this.x, this.y, target, this.damage, 10, this.color));
+            }
+
+            draw(ctx) {
+                // Base
+                ctx.fillStyle = '#334155';
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, 20, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Turret
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, 10, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Range (optional debug or hover)
+                // ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+                // ctx.beginPath();
+                // ctx.arc(this.x, this.y, this.range, 0, Math.PI*2);
+                // ctx.stroke();
+            }
+        }
+
+        // --- Interaction for Placement ---
+        let selectedTowerType = 1; // Default
+        window.selectTower = (type) => {
+            selectedTowerType = type;
+            document.querySelectorAll('.tower-card').forEach(el => el.classList.remove('selected'));
+            document.querySelectorAll('.tower-card')[type - 1].classList.add('selected');
+        };
+
+        canvas.addEventListener('click', (e) => {
+            if (!State.isRunning || State.isPaused) return;
+
+            const rect = canvas.getBoundingClientRect();
+            // Scale coords if canvas is resized by CSS
+            const scaleX = canvas.width / rect.width;
+            const scaleY = canvas.height / rect.height;
+
+            const x = (e.clientX - rect.left) * scaleX;
+            const y = (e.clientY - rect.top) * scaleY;
+
+            // Check placement cost
+            let cost = 50;
+            if (selectedTowerType === 2) cost = 120;
+            if (selectedTowerType === 3) cost = 250;
+
+            if (State.gold >= cost) {
+                // Check collision with path (simple radius check)
+                // We can skip path collision for now or implement distance check to waypoints segments
+                // Let's just place it
+                State.towers.push(new Tower(x, y, selectedTowerType));
+                State.gold -= cost;
+                updateStats();
+            } else {
+                // Feedback NOT ENOUGH GOLD
+                alert("Niet genoeg goud! Maak sommen!");
+            }
+        });
+
+        class WaveManager {
+            constructor() {
+                this.spawnTimer = 0;
+                this.enemiesToSpawn = 0;
+                this.spawnInterval = 60; // Frames
+                this.waveCooldown = 0;
+            }
+
+            update() {
+                if (this.waveCooldown > 0) {
+                    this.waveCooldown--;
+                    if (this.waveCooldown === 0) {
+                        this.startNextWave();
+                    }
+                    return;
+                }
+
+                if (this.enemiesToSpawn > 0) {
+                    this.spawnTimer++;
+                    if (this.spawnTimer >= this.spawnInterval) {
+                        State.enemies.push(new Enemy(State.wave));
+                        this.enemiesToSpawn--;
+                        this.spawnTimer = 0;
+                    }
+                } else if (State.enemies.length === 0) {
+                    // Wave cleared
+                    this.waveCooldown = 180; // 3 seconds break
+                }
+            }
+
+            startNextWave() {
+                State.wave++;
+                this.enemiesToSpawn = 5 + State.wave * 2;
+                // Notify user of new wave?
+            }
+        }
+
+        const waveManager = new WaveManager();
+
+        // --- Core Loops ---
+        let lastTime = 0;
+        function gameLoop(timestamp) {
+            if (!State.isRunning) return;
+
+            const deltaTime = timestamp - lastTime;
+            lastTime = timestamp;
+
+            if (!State.isPaused) {
+                update(deltaTime);
+            }
+            draw();
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        function update(deltaTime) {
+            // Spawn Logic
+            waveManager.update();
+
+            // Entity Updates
+            State.enemies.forEach(e => e.update());
+            State.towers.forEach(t => t.update());
+            State.projectiles.forEach(p => p.update());
+            State.particles.forEach(p => p.update());
+
+            // Filter dead entities
+            State.enemies = State.enemies.filter(e => !e.markedForDeletion);
+            State.projectiles = State.projectiles.filter(p => !p.markedForDeletion);
+            State.particles = State.particles.filter(p => !p.markedForDeletion);
+
+            if (State.lives <= 0) {
+                alert("GAME OVER - Probeer opnieuw!");
+                location.reload();
+            }
+        }
+
+        function draw() {
+            // Clear screen
+            ctx.fillStyle = '#1e293b';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw Map Path
+            ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+            ctx.lineWidth = 40;
+            ctx.lineCap = 'round';
+            ctx.lineJoin = 'round';
+            ctx.beginPath();
+            ctx.moveTo(Path[0].x, Path[0].y);
+            for (let i = 1; i < Path.length; i++) {
+                ctx.lineTo(Path[i].x, Path[i].y);
+            }
+            ctx.stroke();
+
+            // Draw Thin line center
+            ctx.strokeStyle = 'rgba(139, 92, 246, 0.3)'; // Violet accent
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.moveTo(Path[0].x, Path[0].y);
+            for (let i = 1; i < Path.length; i++) {
+                ctx.lineTo(Path[i].x, Path[i].y);
+            }
+            ctx.stroke();
+
+            // Draw Entities
+            State.towers.forEach(t => t.draw(ctx));
+            State.enemies.forEach(e => e.draw(ctx));
+            State.projectiles.forEach(p => p.draw(ctx));
+            State.particles.forEach(p => p.draw(ctx));
+        }
+
+        // --- UI Interactions ---
+        function startGame() {
+            document.getElementById('start-screen').style.display = 'none';
+            document.getElementById('game-ui').style.display = 'flex';
+            State.isRunning = true;
+            updateStats();
+            requestAnimationFrame(gameLoop);
+        }
+
+        function updateStats() {
+            document.getElementById('gold-display').innerText = State.gold;
+            document.getElementById('lives-display').innerText = State.lives;
+        }
+
+        function selectTower(id) {
+            document.querySelectorAll('.tower-card').forEach(el => el.classList.remove('selected'));
+            document.querySelectorAll('.tower-card')[id - 1].classList.add('selected');
+            // Logic to set current placement tower
+        }
+
+        // Bank Button Logic
+        const bankBtn = document.getElementById('bank-btn');
+        const panicBtn = document.getElementById('panic-btn');
+        const mathModal = document.getElementById('math-modal');
+        const mathInput = document.getElementById('math-answer');
+        const mathQuestion = document.getElementById('math-question');
+        const modalTitle = document.querySelector('.modal-content h2');
+
+        let isPanicMode = false;
+        let panicCorrectCount = 0;
+        const PANIC_REQUIREMENT = 3;
+
+        bankBtn.addEventListener('click', () => {
+            if (!State.isRunning) return;
+            startMathSession(false);
+        });
+
+        panicBtn.addEventListener('click', () => {
+            if (!State.isRunning) return;
+            if (State.enemies.length === 0) {
+                alert("Geen vijanden om te vernietigen!");
+                return;
+            }
+            startMathSession(true);
+        });
+
+        function startMathSession(panic) {
+            State.isPaused = true;
+            isPanicMode = panic;
+            panicCorrectCount = 0;
+
+            if (isPanicMode) {
+                modalTitle.innerText = "MEGA LASER: Los 3 sommen op!";
+                modalTitle.style.color = 'var(--accent-danger)';
+                // Generate Hard Tier 4 question
+                State.currentProblem = MathEngine.generateProblem(4);
+            } else {
+                modalTitle.innerText = "Los op voor Geld!";
+                modalTitle.style.color = 'var(--accent-secondary)';
+                const tier = MathEngine.getTier(State.wave);
+                State.currentProblem = MathEngine.generateProblem(tier);
+            }
+
+            mathQuestion.innerText = State.currentProblem.question;
+            mathInput.value = '';
+            mathModal.style.display = 'flex';
+            mathInput.focus();
+        }
+
+        mathInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                const val = parseInt(mathInput.value);
+                if (val === State.currentProblem.answer) {
+                    // Correct
+                    if (isPanicMode) {
+                        panicCorrectCount++;
+                        if (panicCorrectCount >= PANIC_REQUIREMENT) {
+                            activateMegaLaser();
+                            closeModal();
+                        } else {
+                            // Next panic question
+                            State.currentProblem = MathEngine.generateProblem(4);
+                            mathQuestion.innerText = State.currentProblem.question;
+                            mathInput.value = '';
+                            mathInput.focus();
+                        }
+                    } else {
+                        State.gold += 15 + State.wave; // Scaling reward
+                        updateStats();
+                        closeModal();
+                        // KACHING Effect center screen or near bank button?
+                        // Since modal closes, we back in game, let's spawn near top center
+                        spawnParticles(640, 50, '#f59e0b', 20);
+                    }
+                } else {
+                    // Wrong
+                    mathInput.style.borderColor = 'red';
+                    setTimeout(() => mathInput.style.borderColor = 'var(--accent-primary)', 500);
+                    if (isPanicMode) {
+                        // Reset progress or punish? For now just try again
+                    }
+                }
+            }
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+
+        function activateMegaLaser() {
+            // Kill all enemies
+            State.enemies.forEach(e => {
+                e.takeDamage(9999);
+                // Laser effect could be drawn here in loop or separate visual
+            });
+            // Visual Flash
+            const flash = document.createElement('div');
+            flash.style.position = 'absolute';
+            flash.style.top = '0';
+            flash.style.left = '0';
+            flash.style.width = '100%';
+            flash.style.height = '100%';
+            flash.style.background = 'white';
+            flash.style.opacity = '0.8';
+            flash.style.pointerEvents = 'none';
+            document.body.appendChild(flash);
+
+            let op = 0.8;
+            const timer = setInterval(() => {
+                op -= 0.05;
+                flash.style.opacity = op;
+                if (op <= 0) {
+                    clearInterval(timer);
+                    flash.remove();
+                }
+            }, 30);
+        }
+
+        function closeModal() {
+            mathModal.style.display = 'none';
+            State.isPaused = false;
+        }
+
+        // Initialize
+        window.addEventListener('resize', resize);
+
+    </script>
+</body>
+
+</html>
