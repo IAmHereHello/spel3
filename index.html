@@ -1,1003 +1,568 @@
 <!DOCTYPE html>
 <html lang="nl">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rekenburcht - Verdedig met Wiskunde!</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;700&display=swap" rel="stylesheet">
+    <title>Pizza Pythagoras</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-dark: #0f172a;
-            --bg-panel: rgba(30, 41, 59, 0.9);
-            --accent-primary: #8b5cf6;
-            /* Violet */
-            --accent-secondary: #06b6d4;
-            /* Cyan */
-            --accent-gold: #f59e0b;
-            --accent-danger: #ef4444;
-            --text-main: #f8fafc;
-            --text-muted: #94a3b8;
-            --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+            --primary: #FF6B6B;
+            --secondary: #4ECDC4;
+            --accent: #FFE66D;
+            --dark: #2C3E50;
+            --light: #F7F9FC;
+            --success: #6BCB77;
+            --danger: #FF6B6B;
+            --pizza-crust: #E6A15C;
+            --pizza-sauce: #D63031;
+            --cheese: #FFEAA7;
+        }
+
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-user-select: none;
         }
 
         body {
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg-dark);
-            color: var(--text-main);
             font-family: 'Outfit', sans-serif;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            user-select: none;
-        }
-
-        #game-container {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            max-width: 1280px;
-            max-height: 720px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-            background: #1e293b;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-
-        canvas {
-            display: block;
-            width: 100%;
-            height: 100%;
-        }
-
-        /* UI Overlay Elements */
-        .ui-layer {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            /* Let clicks pass through to canvas by default */
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
-        /* Top HUD */
-        .hud-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-        }
-
-        .stat-card {
-            background: var(--bg-panel);
-            backdrop-filter: blur(10px);
-            padding: 10px 20px;
-            border-radius: 8px;
-            border: var(--glass-border);
+            background-color: var(--light);
+            color: var(--dark);
+            margin: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-width: 100px;
+            min-height: 100vh;
+            overflow: hidden;
         }
 
-        .stat-label {
-            font-size: 0.8rem;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
+        /* HEADER */
+        header {
+            width: 100%;
+            background: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 10;
         }
 
-        .stat-value {
-            font-size: 1.5rem;
+        .stats {
+            display: flex;
+            gap: 2rem;
             font-weight: 700;
-            color: var(--accent-secondary);
-        }
-
-        .stat-value.gold {
-            color: var(--accent-gold);
-        }
-
-        .stat-value.danger {
-            color: var(--accent-danger);
-        }
-
-        /* Bank Button */
-        #bank-btn {
-            pointer-events: auto;
-            background: linear-gradient(135deg, var(--accent-gold), #d97706);
-            border: none;
-            padding: 15px 30px;
-            border-radius: 50px;
             font-size: 1.2rem;
-            font-weight: bold;
-            color: white;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
-            transition: transform 0.1s, box-shadow 0.1s;
-            animation: pulse-gold 2s infinite;
         }
 
-        #bank-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.6);
+        .stat-item {
+            background: var(--light);
+            padding: 0.5rem 1rem;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        #bank-btn:active {
-            transform: scale(0.95);
-        }
+        .stat-icon { font-size: 1.5rem; }
 
-        @keyframes pulse-gold {
-            0% {
-                box-shadow: 0 0 0 0 rgba(245, 158, 11, 0.4);
-            }
-
-            70% {
-                box-shadow: 0 0 0 10px rgba(245, 158, 11, 0);
-            }
-
-            100% {
-                box-shadow: 0 0 0 0 rgba(245, 158, 11, 0);
-            }
-        }
-
-        /* Math Modal */
-        #math-modal {
-            display: none;
-            /* Hidden by default */
-            position: absolute;
-            top: 0;
-            left: 0;
+        /* GAME AREA */
+        #game-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             width: 100%;
-            height: 100%;
-            background: rgba(15, 23, 42, 0.8);
-            backdrop-filter: blur(5px);
+            max-width: 800px;
+            position: relative;
+        }
+
+        /* CUSTOMER BUBBLE */
+        #customer-area {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+            height: 120px;
+            align-items: flex-end;
+            position: relative;
+        }
+
+        .customer-avatar {
+            font-size: 4rem;
+            margin-right: 1rem;
+            animation: bounce 2s infinite ease-in-out;
+        }
+
+        .speech-bubble {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 20px 20px 20px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            max-width: 400px;
+            position: relative;
+            font-size: 1.2rem;
+            line-height: 1.4;
+        }
+
+        .math-highlight {
+            color: var(--primary);
+            font-weight: 900;
+            font-size: 1.4rem;
+            background: #fff0f0;
+            padding: 0.2rem 0.5rem;
+            border-radius: 6px;
+        }
+
+        /* PIZZA BOARD */
+        #pizza-board {
+            position: relative;
+            width: 400px;
+            height: 400px;
+            background: rgba(255,255,255,0.5);
+            border-radius: 50%;
+            display: flex;
             justify-content: center;
             align-items: center;
-            pointer-events: auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            cursor: crosshair;
+            transition: transform 0.3s ease;
+        }
+        
+        #pizza-board:active {
+            transform: scale(0.98);
+        }
+
+        .pizza-base {
+            width: 360px;
+            height: 360px;
+            background: var(--pizza-crust);
+            border-radius: 50%;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
+            border: 8px solid #d48d48;
+        }
+
+        .sauce-layer {
+            position: absolute;
+            top: 20px; left: 20px; right: 20px; bottom: 20px;
+            background: var(--pizza-sauce);
+            border-radius: 50%;
+            opacity: 0.9;
+        }
+
+        .cheese-layer {
+            position: absolute;
+            top: 30px; left: 30px; right: 30px; bottom: 30px;
+            background: var(--cheese);
+            border-radius: 50%;
+            opacity: 0.8;
+            background-image: radial-gradient(#ffd56b 10%, transparent 11%);
+            background-size: 20px 20px;
+        }
+
+        .topping {
+            position: absolute;
+            width: 32px;
+            height: 32px;
+            font-size: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transform: translate(-50%, -50%) scale(0);
+            pointer-events: none;
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        /* INGREDIENT SELECTOR */
+        #controls {
+            margin-top: 2rem;
+            display: flex;
+            gap: 1rem;
+            background: white;
+            padding: 1rem;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .ingredient-btn {
+            background: #f0f0f0;
+            border: none;
+            padding: 0.8rem 1.2rem;
+            border-radius: 12px;
+            cursor: pointer;
+            font-family: inherit;
+            font-weight: 700;
+            font-size: 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 0.5rem;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .ingredient-btn.active {
+            background: #fff0f0;
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: translateY(-2px);
+        }
+
+        .ingredient-btn:hover {
+            background: #e8e8e8;
+        }
+
+        .ingredient-icon {
+            font-size: 1.5rem;
+        }
+
+        #serve-btn {
+            background: var(--success);
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            margin-left: 1rem;
+            transition: transform 0.2s;
+            box-shadow: 0 4px 0 #58a962;
+        }
+
+        #serve-btn:active {
+            transform: translateY(4px);
+            box-shadow: none;
+        }
+
+        /* OVERLAYS */
+        #feedback-overlay {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
             z-index: 100;
         }
 
-        .modal-content {
-            background: var(--bg-panel);
-            padding: 40px;
-            border-radius: 16px;
-            border: 1px solid var(--accent-primary);
-            box-shadow: 0 0 50px rgba(139, 92, 246, 0.3);
+        #feedback-overlay.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .feedback-card {
+            background: white;
+            padding: 3rem;
+            border-radius: 24px;
             text-align: center;
-            width: 400px;
-            max-width: 90%;
+            transform: scale(0.8);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            max-width: 400px;
         }
 
-        .question {
-            font-size: 3rem;
-            font-weight: 700;
-            margin-bottom: 20px;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        #feedback-overlay.visible .feedback-card {
+            transform: scale(1);
         }
 
-        .answer-input {
-            width: 100%;
-            padding: 15px;
-            font-size: 2rem;
-            text-align: center;
-            background: rgba(0, 0, 0, 0.3);
-            border: 2px solid var(--accent-primary);
-            border-radius: 8px;
-            color: white;
-            outline: none;
-            margin-bottom: 20px;
-        }
-
-        .answer-input:focus {
-            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.3);
-        }
-
-        /* Towers Selector (Bottom) */
-        .towers-panel {
-            pointer-events: auto;
-            display: flex;
-            gap: 15px;
-            background: var(--bg-panel);
-            padding: 15px;
-            border-radius: 12px;
-            border: var(--glass-border);
-            align-self: center;
-        }
-
-        .tower-card {
-            width: 70px;
-            height: 90px;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            border: 2px solid transparent;
-            transition: all 0.2s;
-        }
-
-        .tower-card:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .tower-card.selected {
-            border-color: var(--accent-secondary);
-            background: rgba(6, 182, 212, 0.1);
-        }
-
-        .tower-icon {
-            width: 40px;
-            height: 40px;
-            margin-bottom: 5px;
-            background: #ddd;
-            /* Placeholder */
-            border-radius: 50%;
-        }
-
-        .tower-cost {
-            font-size: 0.9rem;
-            color: var(--accent-gold);
-            font-weight: bold;
-        }
-
-        /* Start Screen */
-        #start-screen {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--bg-dark);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 200;
-        }
-
-        h1 {
-            font-size: 4rem;
-            margin-bottom: 10px;
-            background: linear-gradient(to right, var(--accent-primary), var(--accent-secondary));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .start-btn {
-            background: var(--accent-primary);
+        .feedback-emoji { font-size: 4rem; display: block; margin-bottom: 1rem; }
+        .feedback-title { font-size: 2rem; font-weight: 900; margin: 0 0 1rem 0; color: var(--dark); }
+        .feedback-text { color: #666; margin-bottom: 2rem; font-size: 1.1rem; }
+        
+        .btn-next {
+            background: var(--primary);
             color: white;
             border: none;
-            padding: 15px 40px;
-            font-size: 1.5rem;
-            border-radius: 8px;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 700;
             cursor: pointer;
-            margin-top: 20px;
-            font-family: inherit;
-            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(255, 107, 107, 0.3);
+            transition: transform 0.2s;
         }
 
-        .start-btn:hover {
-            background: #7c3aed;
+        .btn-next:hover { transform: scale(1.05); }
+
+        /* ANIMATIONS */
+        @keyframes popIn {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+            70% { transform: translate(-50%, -50%) scale(1.2); }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .wiggle { animation: wiggle 0.5s ease-in-out; }
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-5deg); }
+            75% { transform: rotate(5deg); }
         }
     </style>
 </head>
-
 <body>
 
+    <header>
+        <div style="font-weight:900; font-size:1.5rem; color:var(--primary);">🍕 Pizza Pythagoras</div>
+        <div class="stats">
+            <div class="stat-item">
+                <span class="stat-icon">📅</span>
+                <span>Dag <span id="day-display">1</span></span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-icon">💰</span>
+                <span>€ <span id="score-display">0</span></span>
+            </div>
+        </div>
+    </header>
+
     <div id="game-container">
-        <canvas id="gameCanvas"></canvas>
-
-        <div class="ui-layer" id="game-ui" style="display: none;">
-            <div class="hud-top">
-                <div class="stat-card">
-                    <span class="stat-label">Levens</span>
-                    <span class="stat-value danger" id="lives-display">20</span>
-                </div>
-
-                <button id="bank-btn">IK WIL GELD! (SOMMEN)</button>
-                <button id="panic-btn"
-                    style="background: linear-gradient(135deg, #ef4444, #b91c1c); margin-left:10px; box-shadow: 0 4px 15px rgba(239, 68, 68, 0.4);">MEGA
-                    LASER</button>
-
-                <div class="stat-card">
-                    <span class="stat-label">Goud</span>
-                    <span class="stat-value gold" id="gold-display">0</span>
-                </div>
-            </div>
-
-            <div class="towers-panel">
-                <div class="tower-card selected" onclick="selectTower(1)">
-                    <div class="tower-icon" style="background: cyan;"></div>
-                    <div class="tower-cost">50</div>
-                </div>
-                <div class="tower-card" onclick="selectTower(2)">
-                    <div class="tower-icon" style="background: orange;"></div>
-                    <div class="tower-cost">120</div>
-                </div>
-                <div class="tower-card" onclick="selectTower(3)">
-                    <div class="tower-icon" style="background: purple;"></div>
-                    <div class="tower-cost">250</div>
-                </div>
+        <div id="customer-area">
+            <div class="customer-avatar" id="customer-face">👨‍🍳</div>
+            <div class="speech-bubble" id="order-text">
+                Welkom chef! Klik op "Start" om te beginnen.
             </div>
         </div>
 
-        <!-- Math Modal -->
-        <div id="math-modal">
-            <div class="modal-content">
-                <h2 style="margin-top:0; color:var(--accent-secondary);">Los op voor Geld!</h2>
-                <div class="question" id="math-question">...</div>
-                <input type="number" class="answer-input" id="math-answer" placeholder="?" autocomplete="off">
-                <div id="feedback-msg" style="height: 20px; color: var(--accent-gold);"></div>
+        <div id="pizza-board">
+            <div class="pizza-base" id="pizza-base">
+                <div class="sauce-layer"></div>
+                <div class="cheese-layer"></div>
+                <!-- Toppings go here -->
             </div>
         </div>
 
-        <!-- Start Screen -->
-        <div id="start-screen">
-            <h1>REKENBURCHT</h1>
-            <p style="font-size: 1.2rem; margin-bottom: 40px; color: var(--text-muted);">Verdedig de burcht met de
-                kracht van wiskunde!</p>
-            <button class="start-btn" onclick="startGame()">START HET SPEL</button>
+        <div id="controls">
+            <button class="ingredient-btn active" onclick="selectTool('salami')">
+                <span class="ingredient-icon">🍕</span>
+                <span>Salami</span>
+            </button>
+            <button class="ingredient-btn" onclick="selectTool('olive')">
+                <span class="ingredient-icon">🫒</span>
+                <span>Olijven</span>
+            </button>
+            <button class="ingredient-btn" onclick="selectTool('mushroom')">
+                <span class="ingredient-icon">🍄</span>
+                <span>Champignons</span>
+            </button>
+            <button id="serve-btn" onclick="servePizza()">Bakken & Serveren!</button>
+        </div>
+    </div>
+
+    <!-- FEEDBACK OVERLAY -->
+    <div id="feedback-overlay">
+        <div class="feedback-card">
+            <span class="feedback-emoji" id="fb-emoji">🤩</span>
+            <h2 class="feedback-title" id="fb-title">Perfect!</h2>
+            <p class="feedback-text" id="fb-text">Je hebt precies 12 salami gelegd.</p>
+            <button class="btn-next" onclick="nextOrder()">Volgende Klant ➔</button>
         </div>
     </div>
 
     <script>
-        // --- Configuration ---
-        const CONFIG = {
-            canvasWidth: 1280,
-            canvasHeight: 720,
-            fps: 60,
-            gridSize: 64
+        // STATE
+        let state = {
+            day: 1,
+            score: 0,
+            activeTool: 'salami',
+            currentOrder: null,
+            toppingsPlaced: {
+                salami: 0,
+                olive: 0,
+                mushroom: 0
+            },
+            isInteractable: false
         };
 
-        // --- State Management ---
-        const State = {
-            gold: 100,
-            lives: 20,
-            wave: 1,
-            isRunning: false,
-            isPaused: false,
-            towers: [],
-            enemies: [],
-            projectiles: [],
-            particles: [],
-            currentProblem: null
+        const INGREDIENTS = {
+            salami: { icon: '🍕', name: 'Salami' },
+            olive: { icon: '🫒', name: 'Olijven' },
+            mushroom: { icon: '🍄', name: 'Champignons' }
         };
 
-        // --- Game Engine ---
-        const canvas = document.getElementById('gameCanvas');
-        const ctx = canvas.getContext('2d');
+        const CUSTOMERS = ['👩', '👨', '👵', '👴', '👧', '👦', '🦁', '👽'];
 
-        // Resize handling to keep aspect ratio
-        function resize() {
-            // Simple fit for now, can be improved later
-            canvas.width = CONFIG.canvasWidth;
-            canvas.height = CONFIG.canvasHeight;
-        }
-        resize();
-
-        class GameEntity {
-            constructor(x, y) {
-                this.x = x;
-                this.y = y;
-                this.markedForDeletion = false;
-            }
-            update() { }
-            draw(ctx) { }
+        // DOM ELEMENTS
+        const pizzaBase = document.getElementById('pizza-base');
+        const orderText = document.getElementById('order-text');
+        const customerFace = document.getElementById('customer-face');
+        const feedbackOverlay = document.getElementById('feedback-overlay');
+        
+        // INIT
+        function init() {
+            startDay();
         }
 
-        class MathEngine {
-            static generateProblem(tier) {
-                let problem = {};
-
-                // Tier 1: Add/Subtract (Wave 1-3)
-                if (tier === 1) {
-                    const isAdd = Math.random() > 0.5;
-                    if (isAdd) {
-                        const a = Math.floor(Math.random() * 10) + 1;
-                        const b = Math.floor(Math.random() * 10) + 1;
-                        problem = {
-                            question: `${a} + ${b} = ?`,
-                            answer: a + b,
-                            type: 'standard'
-                        };
-                    } else {
-                        const a = Math.floor(Math.random() * 10) + 5; // Ensure result is positive
-                        const b = Math.floor(Math.random() * 5) + 1;
-                        problem = {
-                            question: `${a} - ${b} = ?`,
-                            answer: a - b,
-                            type: 'standard'
-                        };
-                    }
-                }
-                // Tier 2: Multiplication (Wave 4-6)
-                else if (tier === 2) {
-                    const a = Math.floor(Math.random() * 10) + 1;
-                    const b = Math.floor(Math.random() * 10) + 1;
-                    problem = {
-                        question: `${a} x ${b} = ?`,
-                        answer: a * b,
-                        type: 'standard'
-                    };
-                }
-                // Tier 3: Fill in the blank (Wave 7-10)
-                else if (tier === 3) {
-                    const a = Math.floor(Math.random() * 12) + 2;
-                    const b = Math.floor(Math.random() * 12) + 2;
-                    const c = a + b;
-                    // "5 + ... = 13"
-                    problem = {
-                        question: `${a} + ... = ${c}`,
-                        answer: b,
-                        type: 'standard'
-                    };
-                }
-                // Tier 4: Estimation / Boss (Wave 10+)
-                else if (tier >= 4) {
-                    // Generates larger sums, asks Yes/No (1 for Yes, 0 for No) implicitly or simplify for now
-                    // Let's stick to standard math but harder for now to keep input simple number pad
-                    const a = Math.floor(Math.random() * 50) + 20;
-                    const b = Math.floor(Math.random() * 50) + 20;
-                    const isAdd = Math.random() > 0.5;
-                    if (isAdd) {
-                        problem = {
-                            question: `${a} + ${b} = ?`,
-                            answer: a + b,
-                            type: 'standard'
-                        };
-                    } else {
-                        const res = Math.floor(Math.random() * 100);
-                        const start = res + Math.floor(Math.random() * 50);
-                        problem = {
-                            question: `${start} - ... = ${res}`,
-                            answer: start - res,
-                            type: 'standard'
-                        };
-                    }
-                }
-
-                return problem;
-            }
-
-            // Helper to determine tier from wave
-            static getTier(wave) {
-                if (wave <= 3) return 1;
-                if (wave <= 6) return 2;
-                if (wave <= 10) return 3;
-                return 4;
-            }
+        function startDay() {
+            nextOrder();
         }
 
-        // --- Map & Pathfinding ---
-        const Path = [
-            { x: 0, y: 360 },
-            { x: 300, y: 360 },
-            { x: 300, y: 150 },
-            { x: 600, y: 150 },
-            { x: 600, y: 500 },
-            { x: 900, y: 500 },
-            { x: 900, y: 360 },
-            { x: 1280, y: 360 }
-        ];
-
-        class Enemy extends GameEntity {
-            constructor(wave) {
-                super(Path[0].x, Path[0].y);
-                this.waypointIndex = 0;
-                this.speed = 1.5 + (wave * 0.1);
-                this.hp = 10 + (wave * 5);
-                this.maxHp = this.hp;
-                this.radius = 15;
-                this.color = '#ef4444';
-                this.bounty = 0; // No gold on kill!
-            }
-
-            update() {
-                // Move towards next waypoint
-                if (this.waypointIndex >= Path.length - 1) {
-                    // Reached end
-                    State.lives -= 1;
-                    updateStats();
-                    this.markedForDeletion = true;
-                    return;
-                }
-
-                const target = Path[this.waypointIndex + 1];
-                const dx = target.x - this.x;
-                const dy = target.y - this.y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-
-                if (dist < 5) {
-                    this.waypointIndex++;
-                } else {
-                    this.x += (dx / dist) * this.speed;
-                    this.y += (dy / dist) * this.speed;
-                }
-            }
-
-            draw(ctx) {
-                ctx.fillStyle = this.color;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                ctx.fill();
-
-                // HP Bar
-                const barWidth = 30;
-                const hpPct = this.hp / this.maxHp;
-                ctx.fillStyle = 'red';
-                ctx.fillRect(this.x - barWidth / 2, this.y - 25, barWidth, 4);
-                ctx.fillStyle = '#22c55e';
-                ctx.fillRect(this.x - barWidth / 2, this.y - 25, barWidth * hpPct, 4);
-            }
-
-            takeDamage(amount) {
-                this.hp -= amount;
-                if (this.hp <= 0) {
-                    this.markedForDeletion = true;
-                    spawnParticles(this.x, this.y, '#ef4444', 10);
-                }
-            }
+        function selectTool(tool) {
+            state.activeTool = tool;
+            // Update UI
+            document.querySelectorAll('.ingredient-btn').forEach(btn => btn.classList.remove('active'));
+            // Find button roughly (in real code use IDs, but this is simple enough)
+            const btns = document.querySelectorAll('.ingredient-btn');
+            if(tool === 'salami') btns[0].classList.add('active');
+            if(tool === 'olive') btns[1].classList.add('active');
+            if(tool === 'mushroom') btns[2].classList.add('active');
         }
 
-        class Particle extends GameEntity {
-            constructor(x, y, color, speed, life) {
-                super(x, y);
-                this.color = color;
-                this.vx = (Math.random() - 0.5) * speed;
-                this.vy = (Math.random() - 0.5) * speed;
-                this.life = life;
-                this.maxLife = life;
-                this.size = Math.random() * 3 + 1;
-            }
+        // MATH GENERATOR
+        function generateOrder() {
+            const types = Object.keys(INGREDIENTS);
+            const type = types[Math.floor(Math.random() * types.length)];
+            
+            // Difficulty based on "Day" - simplified for MVP
+            // Level 1: Addition (A + B)
+            // Level 2: Multiplication (A x B)
+            let operation = (state.day > 1 && Math.random() > 0.5) ? 'mult' : 'add';
+            
+            let num1, num2, target, text;
 
-            update() {
-                this.x += this.vx;
-                this.y += this.vy;
-                this.life--;
-                if (this.life <= 0) this.markedForDeletion = true;
-            }
-
-            draw(ctx) {
-                ctx.globalAlpha = this.life / this.maxLife;
-                ctx.fillStyle = this.color;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.globalAlpha = 1.0;
-            }
-        }
-
-        function spawnParticles(x, y, color, count) {
-            for (let i = 0; i < count; i++) {
-                State.particles.push(new Particle(x, y, color, 5, 40));
-            }
-        }
-
-        class Projectile extends GameEntity {
-            constructor(x, y, target, damage, speed, color) {
-                super(x, y);
-                this.target = target;
-                this.damage = damage;
-                this.speed = speed;
-                this.color = color;
-                this.radius = 4;
-            }
-
-            update() {
-                // Homing missile logic simple
-                if (this.target.markedForDeletion) {
-                    this.markedForDeletion = true;
-                    return;
-                }
-
-                const dx = this.target.x - this.x;
-                const dy = this.target.y - this.y;
-                const dist = Math.sqrt(dx * dx + dy * dy);
-
-                if (dist < 10) {
-                    this.target.takeDamage(this.damage);
-                    this.markedForDeletion = true;
-                    spawnParticles(this.x, this.y, this.color, 3);
-                } else {
-                    this.x += (dx / dist) * this.speed;
-                    this.y += (dy / dist) * this.speed;
-                }
-            }
-
-            draw(ctx) {
-                ctx.fillStyle = this.color;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-                ctx.fill();
-            }
-        }
-
-        class Tower extends GameEntity {
-            constructor(x, y, type) {
-                super(x, y);
-                this.type = type;
-                this.range = 150;
-                this.cooldown = 0;
-                this.maxCooldown = 60;
-                this.damage = 2;
-
-                // Stats based on Type
-                if (type === 1) { // Basic
-                    this.range = 120;
-                    this.maxCooldown = 40;
-                    this.damage = 3;
-                    this.color = 'cyan';
-                } else if (type === 2) { // Sniper
-                    this.range = 300;
-                    this.maxCooldown = 120;
-                    this.damage = 10;
-                    this.color = 'orange';
-                } else if (type === 3) { // Rapid
-                    this.range = 100;
-                    this.maxCooldown = 15;
-                    this.damage = 1;
-                    this.color = 'purple';
-                }
-            }
-
-            update() {
-                if (this.cooldown > 0) this.cooldown--;
-
-                if (this.cooldown <= 0) {
-                    const target = this.findTarget();
-                    if (target) {
-                        this.shoot(target);
-                        this.cooldown = this.maxCooldown;
-                    }
-                }
-            }
-
-            findTarget() {
-                // Find closest enemy
-                let closest = null;
-                let minDst = Infinity;
-
-                for (const enemy of State.enemies) {
-                    const dx = enemy.x - this.x;
-                    const dy = enemy.y - this.y;
-                    const dist = Math.sqrt(dx * dx + dy * dy);
-
-                    if (dist < this.range && dist < minDst) {
-                        closest = enemy;
-                        minDst = dist;
-                    }
-                }
-                return closest;
-            }
-
-            shoot(target) {
-                State.projectiles.push(new Projectile(this.x, this.y, target, this.damage, 10, this.color));
-            }
-
-            draw(ctx) {
-                // Base
-                ctx.fillStyle = '#334155';
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, 20, 0, Math.PI * 2);
-                ctx.fill();
-
-                // Turret
-                ctx.fillStyle = this.color;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, 10, 0, Math.PI * 2);
-                ctx.fill();
-
-                // Range (optional debug or hover)
-                // ctx.strokeStyle = 'rgba(255,255,255,0.1)';
-                // ctx.beginPath();
-                // ctx.arc(this.x, this.y, this.range, 0, Math.PI*2);
-                // ctx.stroke();
-            }
-        }
-
-        // --- Interaction for Placement ---
-        let selectedTowerType = 1; // Default
-        window.selectTower = (type) => {
-            selectedTowerType = type;
-            document.querySelectorAll('.tower-card').forEach(el => el.classList.remove('selected'));
-            document.querySelectorAll('.tower-card')[type - 1].classList.add('selected');
-        };
-
-        canvas.addEventListener('click', (e) => {
-            if (!State.isRunning || State.isPaused) return;
-
-            const rect = canvas.getBoundingClientRect();
-            // Scale coords if canvas is resized by CSS
-            const scaleX = canvas.width / rect.width;
-            const scaleY = canvas.height / rect.height;
-
-            const x = (e.clientX - rect.left) * scaleX;
-            const y = (e.clientY - rect.top) * scaleY;
-
-            // Check placement cost
-            let cost = 50;
-            if (selectedTowerType === 2) cost = 120;
-            if (selectedTowerType === 3) cost = 250;
-
-            if (State.gold >= cost) {
-                // Check collision with path (simple radius check)
-                // We can skip path collision for now or implement distance check to waypoints segments
-                // Let's just place it
-                State.towers.push(new Tower(x, y, selectedTowerType));
-                State.gold -= cost;
-                updateStats();
+            if (operation === 'add') {
+                target = Math.floor(Math.random() * 8) + 3; // 3 to 10
+                num1 = Math.floor(Math.random() * (target - 1)) + 1;
+                num2 = target - num1;
+                text = `Doe mij een pizza met <span class="math-highlight">${num1} + ${num2}</span> plakjes ${INGREDIENTS[type].name}!`;
             } else {
-                // Feedback NOT ENOUGH GOLD
-                alert("Niet genoeg goud! Maak sommen!");
+                num1 = Math.floor(Math.random() * 3) + 2; // 2 to 4
+                num2 = Math.floor(Math.random() * 3) + 2; // 2 to 4
+                target = num1 * num2;
+                text = `Ik rammel! Mag ik <span class="math-highlight">${num1} x ${num2}</span> stukjes ${INGREDIENTS[type].name}?`;
+            }
+
+            return {
+                type: type,
+                target: target,
+                text: text
+            };
+        }
+
+        function nextOrder() {
+            // Reset Board
+            pizzaBase.innerHTML = '<div class="sauce-layer"></div><div class="cheese-layer"></div>';
+            state.toppingsPlaced = { salami: 0, olive: 0, mushroom: 0 };
+            
+            // Hide Feedback
+            feedbackOverlay.classList.remove('visible');
+
+            // Generate New Order
+            state.currentOrder = generateOrder();
+            state.isInteractable = true;
+
+            // Visuals
+            customerFace.textContent = CUSTOMERS[Math.floor(Math.random() * CUSTOMERS.length)];
+            customerFace.style.animation = 'none';
+            customerFace.offsetHeight; /* trigger reflow */
+            customerFace.style.animation = 'bounce 2s infinite ease-in-out';
+            
+            orderText.innerHTML = state.currentOrder.text;
+        }
+
+        // INTERACTION
+        pizzaBase.addEventListener('mousedown', (e) => {
+            if (!state.isInteractable) return;
+
+            const rect = pizzaBase.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            // Simple boundary check (circle)
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            const dist = Math.sqrt((x-centerX)**2 + (y-centerY)**2);
+
+            if (dist < rect.width / 2 - 20) {
+                addTopping(x, y);
             }
         });
 
-        class WaveManager {
-            constructor() {
-                this.spawnTimer = 0;
-                this.enemiesToSpawn = 0;
-                this.spawnInterval = 60; // Frames
-                this.waveCooldown = 0;
-            }
+        function addTopping(x, y) {
+            const tool = state.activeTool;
+            state.toppingsPlaced[tool]++;
 
-            update() {
-                if (this.waveCooldown > 0) {
-                    this.waveCooldown--;
-                    if (this.waveCooldown === 0) {
-                        this.startNextWave();
-                    }
-                    return;
-                }
+            const el = document.createElement('div');
+            el.className = 'topping';
+            el.textContent = INGREDIENTS[tool].icon;
+            el.style.left = x + 'px';
+            el.style.top = y + 'px';
+            // Random rotation for natural look
+            el.style.transform = `translate(-50%, -50%) rotate(${Math.random() * 360}deg) scale(0)`;
+            
+            // CSS Animation override handled by keyframes, but let's set final state
+            setTimeout(() => {
+                el.style.transform = `translate(-50%, -50%) rotate(${Math.random() * 360}deg) scale(1)`;
+            }, 300);
 
-                if (this.enemiesToSpawn > 0) {
-                    this.spawnTimer++;
-                    if (this.spawnTimer >= this.spawnInterval) {
-                        State.enemies.push(new Enemy(State.wave));
-                        this.enemiesToSpawn--;
-                        this.spawnTimer = 0;
-                    }
-                } else if (State.enemies.length === 0) {
-                    // Wave cleared
-                    this.waveCooldown = 180; // 3 seconds break
-                }
-            }
-
-            startNextWave() {
-                State.wave++;
-                this.enemiesToSpawn = 5 + State.wave * 2;
-                // Notify user of new wave?
-            }
+            pizzaBase.appendChild(el);
+            
+            // Optional: Sound effect could go here
         }
 
-        const waveManager = new WaveManager();
+        function servePizza() {
+            if (!state.isInteractable) return;
+            state.isInteractable = false;
 
-        // --- Core Loops ---
-        let lastTime = 0;
-        function gameLoop(timestamp) {
-            if (!State.isRunning) return;
+            const order = state.currentOrder;
+            const placed = state.toppingsPlaced[order.type];
+            const others = Object.keys(state.toppingsPlaced).reduce((sum, key) => 
+                key !== order.type ? sum + state.toppingsPlaced[key] : sum, 0);
 
-            const deltaTime = timestamp - lastTime;
-            lastTime = timestamp;
+            let isCorrect = (placed === order.target) && (others === 0);
 
-            if (!State.isPaused) {
-                update(deltaTime);
-            }
-            draw();
-
-            requestAnimationFrame(gameLoop);
+            showFeedback(isCorrect, placed, order.target, others);
         }
 
-        function update(deltaTime) {
-            // Spawn Logic
-            waveManager.update();
+        function showFeedback(success, placed, target, others) {
+            const title = document.getElementById('fb-title');
+            const text = document.getElementById('fb-text');
+            const emoji = document.getElementById('fb-emoji');
 
-            // Entity Updates
-            State.enemies.forEach(e => e.update());
-            State.towers.forEach(t => t.update());
-            State.projectiles.forEach(p => p.update());
-            State.particles.forEach(p => p.update());
+            if (success) {
+                // Reward
+                state.score += 10;
+                document.getElementById('score-display').textContent = state.score;
+                state.day = Math.floor(state.score / 50) + 1;
+                document.getElementById('day-display').textContent = state.day;
 
-            // Filter dead entities
-            State.enemies = State.enemies.filter(e => !e.markedForDeletion);
-            State.projectiles = State.projectiles.filter(p => !p.markedForDeletion);
-            State.particles = State.particles.filter(p => !p.markedForDeletion);
-
-            if (State.lives <= 0) {
-                alert("GAME OVER - Probeer opnieuw!");
-                location.reload();
-            }
-        }
-
-        function draw() {
-            // Clear screen
-            ctx.fillStyle = '#1e293b';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            // Draw Map Path
-            ctx.strokeStyle = 'rgba(255,255,255,0.1)';
-            ctx.lineWidth = 40;
-            ctx.lineCap = 'round';
-            ctx.lineJoin = 'round';
-            ctx.beginPath();
-            ctx.moveTo(Path[0].x, Path[0].y);
-            for (let i = 1; i < Path.length; i++) {
-                ctx.lineTo(Path[i].x, Path[i].y);
-            }
-            ctx.stroke();
-
-            // Draw Thin line center
-            ctx.strokeStyle = 'rgba(139, 92, 246, 0.3)'; // Violet accent
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            ctx.moveTo(Path[0].x, Path[0].y);
-            for (let i = 1; i < Path.length; i++) {
-                ctx.lineTo(Path[i].x, Path[i].y);
-            }
-            ctx.stroke();
-
-            // Draw Entities
-            State.towers.forEach(t => t.draw(ctx));
-            State.enemies.forEach(e => e.draw(ctx));
-            State.projectiles.forEach(p => p.draw(ctx));
-            State.particles.forEach(p => p.draw(ctx));
-        }
-
-        // --- UI Interactions ---
-        function startGame() {
-            document.getElementById('start-screen').style.display = 'none';
-            document.getElementById('game-ui').style.display = 'flex';
-            State.isRunning = true;
-            updateStats();
-            requestAnimationFrame(gameLoop);
-        }
-
-        function updateStats() {
-            document.getElementById('gold-display').innerText = State.gold;
-            document.getElementById('lives-display').innerText = State.lives;
-        }
-
-        function selectTower(id) {
-            document.querySelectorAll('.tower-card').forEach(el => el.classList.remove('selected'));
-            document.querySelectorAll('.tower-card')[id - 1].classList.add('selected');
-            // Logic to set current placement tower
-        }
-
-        // Bank Button Logic
-        const bankBtn = document.getElementById('bank-btn');
-        const panicBtn = document.getElementById('panic-btn');
-        const mathModal = document.getElementById('math-modal');
-        const mathInput = document.getElementById('math-answer');
-        const mathQuestion = document.getElementById('math-question');
-        const modalTitle = document.querySelector('.modal-content h2');
-
-        let isPanicMode = false;
-        let panicCorrectCount = 0;
-        const PANIC_REQUIREMENT = 3;
-
-        bankBtn.addEventListener('click', () => {
-            if (!State.isRunning) return;
-            startMathSession(false);
-        });
-
-        panicBtn.addEventListener('click', () => {
-            if (!State.isRunning) return;
-            if (State.enemies.length === 0) {
-                alert("Geen vijanden om te vernietigen!");
-                return;
-            }
-            startMathSession(true);
-        });
-
-        function startMathSession(panic) {
-            State.isPaused = true;
-            isPanicMode = panic;
-            panicCorrectCount = 0;
-
-            if (isPanicMode) {
-                modalTitle.innerText = "MEGA LASER: Los 3 sommen op!";
-                modalTitle.style.color = 'var(--accent-danger)';
-                // Generate Hard Tier 4 question
-                State.currentProblem = MathEngine.generateProblem(4);
+                emoji.textContent = '😋';
+                title.textContent = 'Heerlijk!';
+                title.style.color = 'var(--success)';
+                text.textContent = `Precies ${target} stukjes! Dat smaakt naar meer.`;
             } else {
-                modalTitle.innerText = "Los op voor Geld!";
-                modalTitle.style.color = 'var(--accent-secondary)';
-                const tier = MathEngine.getTier(State.wave);
-                State.currentProblem = MathEngine.generateProblem(tier);
-            }
-
-            mathQuestion.innerText = State.currentProblem.question;
-            mathInput.value = '';
-            mathModal.style.display = 'flex';
-            mathInput.focus();
-        }
-
-        mathInput.addEventListener('keydown', (e) => {
-            if (e.key === 'Enter') {
-                const val = parseInt(mathInput.value);
-                if (val === State.currentProblem.answer) {
-                    // Correct
-                    if (isPanicMode) {
-                        panicCorrectCount++;
-                        if (panicCorrectCount >= PANIC_REQUIREMENT) {
-                            activateMegaLaser();
-                            closeModal();
-                        } else {
-                            // Next panic question
-                            State.currentProblem = MathEngine.generateProblem(4);
-                            mathQuestion.innerText = State.currentProblem.question;
-                            mathInput.value = '';
-                            mathInput.focus();
-                        }
-                    } else {
-                        State.gold += 15 + State.wave; // Scaling reward
-                        updateStats();
-                        closeModal();
-                        // KACHING Effect center screen or near bank button?
-                        // Since modal closes, we back in game, let's spawn near top center
-                        spawnParticles(640, 50, '#f59e0b', 20);
-                    }
+                emoji.textContent = '😤';
+                title.textContent = 'Dat klopt niet...';
+                title.style.color = 'var(--danger)';
+                
+                if (others > 0) {
+                   text.textContent = `Ik wilde alleen ${INGREDIENTS[state.currentOrder.type].name}, geen rommel!`; 
+                } else if (placed < target) {
+                    text.textContent = `Ik tel er maar ${placed}, maar ik wilde er ${target}!`;
                 } else {
-                    // Wrong
-                    mathInput.style.borderColor = 'red';
-                    setTimeout(() => mathInput.style.borderColor = 'var(--accent-primary)', 500);
-                    if (isPanicMode) {
-                        // Reset progress or punish? For now just try again
-                    }
+                    text.textContent = `Véél te veel! Ik tel er ${placed}, dat moesten er ${target} zijn.`;
                 }
             }
-            if (e.key === 'Escape') {
-                closeModal();
-            }
-        });
 
-        function activateMegaLaser() {
-            // Kill all enemies
-            State.enemies.forEach(e => {
-                e.takeDamage(9999);
-                // Laser effect could be drawn here in loop or separate visual
-            });
-            // Visual Flash
-            const flash = document.createElement('div');
-            flash.style.position = 'absolute';
-            flash.style.top = '0';
-            flash.style.left = '0';
-            flash.style.width = '100%';
-            flash.style.height = '100%';
-            flash.style.background = 'white';
-            flash.style.opacity = '0.8';
-            flash.style.pointerEvents = 'none';
-            document.body.appendChild(flash);
-
-            let op = 0.8;
-            const timer = setInterval(() => {
-                op -= 0.05;
-                flash.style.opacity = op;
-                if (op <= 0) {
-                    clearInterval(timer);
-                    flash.remove();
-                }
-            }, 30);
+            feedbackOverlay.classList.add('visible');
         }
 
-        function closeModal() {
-            mathModal.style.display = 'none';
-            State.isPaused = false;
-        }
-
-        // Initialize
-        window.addEventListener('resize', resize);
+        // Initial Start
+        init();
 
     </script>
 </body>
-
 </html>
