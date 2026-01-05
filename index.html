@@ -16,10 +16,8 @@
             --dark: #2C3E50;
             --light: #F7F9FC;
             --success: #6BCB77;
-            --danger: #FF6B6B;
+            --danger: #e74c3c;
             --pizza-crust: #E6A15C;
-            --pizza-sauce: #D63031;
-            --cheese: #FFEAA7;
         }
 
         * {
@@ -31,11 +29,7 @@
         body {
             font-family: 'Outfit', sans-serif;
             background-color: #333;
-            background-image:
-                linear-gradient(45deg, #222 25%, transparent 25%),
-                linear-gradient(-45deg, #222 25%, transparent 25%),
-                linear-gradient(45deg, transparent 75%, #222 75%),
-                linear-gradient(-45deg, transparent 75%, #222 75%);
+            background-image: linear-gradient(45deg, #222 25%, transparent 25%), linear-gradient(-45deg, #222 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #222 75%), linear-gradient(-45deg, transparent 75%, #222 75%);
             background-size: 40px 40px;
             background-position: 0 0, 0 20px, 20px -20px, -20px 0px;
             color: var(--dark);
@@ -51,13 +45,13 @@
         header {
             width: 100%;
             background: white;
-            padding: 0.8rem 2rem;
+            padding: 0.5rem 2rem;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
             display: flex;
             justify-content: space-between;
             align-items: center;
             z-index: 20;
-            height: 70px;
+            height: 60px;
         }
 
         .stats {
@@ -69,7 +63,7 @@
 
         .stat-item {
             background: var(--light);
-            padding: 0.5rem 1rem;
+            padding: 0.2rem 1rem;
             border-radius: 12px;
             display: flex;
             align-items: center;
@@ -77,10 +71,10 @@
             border: 2px solid #eee;
         }
 
-        /* NAVIGATION TABS */
+        /* TABS */
         #nav-tabs {
             width: 100%;
-            height: 80px;
+            height: 60px;
             background: #2C3E50;
             display: flex;
             justify-content: center;
@@ -94,7 +88,7 @@
             background: transparent;
             border: 2px solid rgba(255, 255, 255, 0.2);
             color: rgba(255, 255, 255, 0.6);
-            padding: 0.5rem 1.5rem;
+            padding: 0.2rem 1.5rem;
             border-radius: 12px;
             font-size: 1rem;
             font-weight: 700;
@@ -112,11 +106,6 @@
             border-color: var(--primary);
             transform: translateY(-5px);
             box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
-        }
-
-        .nav-icon {
-            font-size: 1.5rem;
-            margin-bottom: 2px;
         }
 
         .badge {
@@ -141,7 +130,7 @@
             opacity: 1;
         }
 
-        /* VIEW CONTAINER */
+        /* MAIN AREA */
         #main-view {
             flex: 1;
             width: 100%;
@@ -162,7 +151,6 @@
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.3s ease;
-            padding: 2rem;
         }
 
         .station.active {
@@ -170,78 +158,82 @@
             pointer-events: all;
         }
 
-        /* ================== STATION 1: PREP (Toppings) ================== */
+        /* PREP */
         #station-prep {
-            background: #dcdde1;
-            /* Stainless Steel */
-            background-image: linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
-            background-size: 50px 100%;
             justify-content: flex-start;
         }
 
         #ticket-rail {
             width: 100%;
-            min-height: 100px;
+            min-height: 120px;
             background: #555;
             display: flex;
-            justify-content: center;
-            align-items: flex-start;
+            justify-content: flex-start;
+            align-items: center;
             padding: 10px;
-            margin-bottom: 20px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            gap: 10px;
+            overflow-x: auto;
+            border-bottom: 5px solid #333;
         }
 
         .ticket {
             background: #fff;
-            width: 400px;
-            padding: 1rem;
+            width: 200px;
+            padding: 0.8rem;
             font-family: 'Courier New', monospace;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            position: relative;
-            text-align: center;
-        }
-
-        .ticket.empty {
-            opacity: 0.5;
-            border: 2px dashed #999;
-            background: transparent;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            font-size: 0.9rem;
+            flex-shrink: 0;
             cursor: pointer;
+            transition: transform 0.2s;
+            position: relative;
         }
 
-        .ticket.empty:hover {
-            background: rgba(255, 255, 255, 0.1);
+        .ticket:hover {
+            transform: translateY(-5px);
+        }
+
+        .ticket.active-prep {
+            border: 3px solid var(--success);
+            transform: scale(1.05);
+        }
+
+        .ticket.urgent {
+            background: #ffebee;
+            border: 2px solid red;
         }
 
         #prep-table {
             position: relative;
             width: 100%;
-            max-width: 900px;
+            max-width: 1000px;
             flex: 1;
             display: flex;
-            gap: 2rem;
+            gap: 1rem;
             align-items: center;
             justify-content: center;
+            padding: 1rem;
         }
 
         #ingredients-rack {
             display: flex;
             flex-direction: column;
-            gap: 1rem;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            height: 400px;
+            justify-content: center;
         }
 
         .ingredient-bin {
-            width: 80px;
-            height: 80px;
+            width: 60px;
+            height: 60px;
             background: white;
             border-radius: 50%;
-            border: 4px solid #bdc3c7;
+            border: 3px solid #bdc3c7;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 2rem;
+            font-size: 1.5rem;
             cursor: pointer;
             transition: transform 0.2s;
             position: relative;
@@ -257,20 +249,23 @@
             box-shadow: 0 0 15px rgba(46, 204, 113, 0.5);
         }
 
-        .bin-label {
-            position: absolute;
-            bottom: -20px;
-            font-size: 0.8rem;
-            background: #333;
-            color: white;
-            padding: 2px 5px;
-            border-radius: 4px;
-            opacity: 0;
-            pointer-events: none;
+        .ingredient-bin.locked {
+            filter: grayscale(1);
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
-        .ingredient-bin:hover .bin-label {
-            opacity: 1;
+        .bin-label {
+            position: absolute;
+            bottom: -15px;
+            font-size: 0.7rem;
+            background: #333;
+            color: white;
+            padding: 1px 4px;
+            border-radius: 4px;
+            pointer-events: none;
+            white-space: nowrap;
+            z-index: 10;
         }
 
         #prep-board {
@@ -295,25 +290,26 @@
             border: 6px solid #d38c45;
             transition: transform 0.2s;
             overflow: hidden;
-            /* Important for manual cutting: default to no pointer events on children */
         }
 
         .pizza-visual .sauce {
             position: absolute;
-            top: 20px;
-            left: 20px;
-            right: 20px;
-            bottom: 20px;
-            background: var(--pizza-sauce);
+            top: 15px;
+            left: 15px;
+            right: 15px;
+            bottom: 15px;
+            background: #e6e6e6;
+            /* Empty */
             border-radius: 50%;
             pointer-events: none;
+            opacity: 1;
         }
 
         .topping-item {
             position: absolute;
-            width: 36px;
-            height: 36px;
-            font-size: 28px;
+            width: 30px;
+            height: 30px;
+            font-size: 24px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -321,50 +317,20 @@
             z-index: 5;
         }
 
-        #prep-controls {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .action-btn {
-            background: var(--success);
-            color: white;
-            border: none;
-            padding: 1rem 1.5rem;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 1.1rem;
-            cursor: pointer;
-            box-shadow: 0 4px 0 #58a962;
-        }
-
-        .action-btn:active {
-            transform: translateY(4px);
-            box-shadow: none;
-        }
-
-        .action-btn:disabled {
-            background: #95a5a6;
-            box-shadow: none;
-            cursor: not-allowed;
-            opacity: 0.7;
-        }
-
-        /* ================== STATION 2: OVEN ================== */
+        /* OVEN */
         #station-oven {
             background: #5D4037;
-            display: flex;
+            flex-direction: row;
             flex-wrap: wrap;
             justify-content: center;
             align-content: center;
             gap: 2rem;
-            padding: 4rem;
+            padding: 2rem;
         }
 
         .oven-slot {
-            width: 300px;
-            height: 220px;
+            width: 240px;
+            height: 180px;
             background: #3E2723;
             border-radius: 20px 20px 0 0;
             border: 4px solid #8D6E63;
@@ -373,7 +339,6 @@
             justify-content: center;
             align-items: flex-end;
             padding-bottom: 20px;
-            box-shadow: inset 0 0 40px rgba(0, 0, 0, 0.8);
             overflow: hidden;
         }
 
@@ -382,7 +347,7 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 60px;
+            height: 50px;
             background: linear-gradient(to top, #ff5722, transparent);
             opacity: 0.3;
             animation: flicker 0.2s infinite;
@@ -394,17 +359,16 @@
             right: 10px;
             background: rgba(0, 0, 0, 0.6);
             color: white;
-            padding: 4px 8px;
+            padding: 2px 6px;
             border-radius: 4px;
             font-family: monospace;
-            font-size: 1.2rem;
         }
 
         .oven-temp-gauge {
             position: absolute;
             top: 10px;
             left: 10px;
-            width: 10px;
+            width: 8px;
             height: 40px;
             background: #333;
             border: 1px solid #666;
@@ -422,8 +386,8 @@
         }
 
         .oven-pizza {
-            width: 200px;
-            height: 200px;
+            width: 160px;
+            height: 160px;
             transform: scaleX(1) scaleY(0.4);
             cursor: pointer;
             transition: transform 0.2s, filter 0.5s;
@@ -438,7 +402,12 @@
             border-color: #8D6E63;
         }
 
-        /* ================== STATION 3: CUTTING ================== */
+        .oven-pizza.crispy {
+            filter: brightness(0.6) sepia(0.6) contrast(1.2);
+            border-color: #5D4037;
+        }
+
+        /* CUTTING */
         #station-cutting {
             background: #7f8c8d;
             justify-content: center;
@@ -458,7 +427,6 @@
             cursor: crosshair;
         }
 
-        /* Interactive Cutting Overlay */
         #cut-overlay {
             position: absolute;
             top: 0;
@@ -493,56 +461,20 @@
             stroke-width: 2;
         }
 
-        #cut-instructions {
-            background: rgba(0, 0, 0, 0.5);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            margin-bottom: 0.5rem;
-            font-weight: bold;
-        }
-
-        #cut-controls-row {
-            display: flex;
-            gap: 1rem;
-        }
-
-        #btn-confirm-cut {
-            background: var(--dark);
+        /* GENERAL UI */
+        .action-btn {
+            background: var(--success);
             color: white;
             border: none;
-            padding: 0.8rem 2rem;
-            border-radius: 30px;
+            padding: 0.8rem 1.5rem;
+            border-radius: 12px;
             font-weight: 700;
             cursor: pointer;
         }
 
-        #final-serve-btn {
-            background: var(--accent);
-            color: var(--dark);
-            padding: 1rem 3rem;
-            font-size: 1.5rem;
-            border-radius: 50px;
-            border: none;
-            font-weight: 900;
-            box-shadow: 0 5px 15px rgba(255, 230, 109, 0.4);
-            cursor: pointer;
-            margin-top: 1rem;
-        }
-
-        #final-serve-btn:hover {
-            transform: scale(1.05);
-        }
-
-        /* ANIMATIONS & OVERLAYS */
-        @keyframes flicker {
-            0% {
-                opacity: 0.3;
-            }
-
-            100% {
-                opacity: 0.5;
-            }
+        .action-btn:disabled {
+            background: #95a5a6;
+            cursor: not-allowed;
         }
 
         #feedback-overlay {
@@ -551,7 +483,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.8);
+            background: rgba(0, 0, 0, 0.85);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -568,7 +500,7 @@
 
         .feedback-card {
             background: white;
-            padding: 2rem 3rem;
+            padding: 2rem;
             border-radius: 20px;
             text-align: center;
             max-width: 500px;
@@ -581,19 +513,49 @@
             transform: scale(1);
         }
 
-        .heat-meter {
-            width: 100%;
-            height: 10px;
-            background: #eee;
-            margin: 10px 0;
-            border-radius: 5px;
-            overflow: hidden;
+        /* ANIMATIONS */
+        @keyframes flicker {
+            0% {
+                opacity: 0.3;
+            }
+
+            100% {
+                opacity: 0.5;
+            }
         }
 
-        .heat-val {
+        /* DAY START OVERLAY */
+        #day-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
             height: 100%;
-            background: red;
-            width: 80%;
+            background: var(--dark);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 200;
+        }
+
+        #day-overlay h1 {
+            font-size: 4rem;
+            color: var(--accent);
+            margin: 0;
+        }
+
+        .unlock-list {
+            list-style: none;
+            padding: 0;
+            text-align: center;
+        }
+
+        .unlock-item {
+            font-size: 1.5rem;
+            margin: 10px 0;
+            color: var(--success);
         }
     </style>
 </head>
@@ -612,34 +574,25 @@
 
         <!-- STATION 1: PREP -->
         <div id="station-prep" class="station active">
-            <div id="ticket-rail">
-                <div id="active-ticket-area"></div>
-            </div>
+            <div id="ticket-rail"><!-- Dynamic Tickets --></div>
 
             <div id="prep-table">
                 <div id="ingredients-rack">
-                    <div class="ingredient-bin" onclick="setTool('salami')" id="bin-salami"><span
-                            style="pointer-events:none">🍕</span>
-                        <div class="bin-label">Salami</div>
-                    </div>
-                    <div class="ingredient-bin" onclick="setTool('olive')" id="bin-olive"><span
-                            style="pointer-events:none">🫒</span>
-                        <div class="bin-label">Olijf</div>
-                    </div>
-                    <div class="ingredient-bin" onclick="setTool('mushroom')" id="bin-mushroom"><span
-                            style="pointer-events:none">🍄</span>
-                        <div class="bin-label">Paddenst.</div>
-                    </div>
+                    <!-- Dynamic Ingredients -->
                 </div>
 
                 <div id="prep-board">
                     <div class="pizza-visual" id="prep-pizza" onmousedown="handlePrepClick(event)">
-                        <div class="sauce"></div>
+                        <div class="sauce" id="prep-sauce"></div>
                         <div id="prep-toppings-container"></div>
                     </div>
                 </div>
 
-                <div id="prep-controls">
+                <div style="display:flex; flex-direction:column; gap:1rem;">
+                    <div id="current-order-info"
+                        style="background:white; padding:1rem; border-radius:10px; width:200px; height:150px; overflow-y:auto; font-size:0.9rem;">
+                        Selecteer een bon om te beginnen...
+                    </div>
                     <button class="action-btn" id="btn-to-oven" onclick="movePrepToOven()" disabled>Naar de Oven
                         ➡</button>
                     <button class="action-btn" style="background:#e74c3c" onclick="trashPrep()">🗑 Prullenbak</button>
@@ -659,576 +612,629 @@
         <div id="station-cutting" class="station">
             <div id="cutting-board-area" style="display:none;">
                 <h2 style="color:white; margin:0;" id="cutting-header">Snijden</h2>
-                <div id="cut-instructions">Sleep een lijn over de pizza om te snijden.</div>
+                <div id="cut-instructions" style="color:#ddd; margin-bottom:10px;">Sleep een lijn over de pizza.</div>
 
-                <div class="ticket" id="cut-ticket-display" style="width:300px; margin-bottom:1rem;"></div>
+                <div class="ticket" id="cut-ticket-display" style="width:300px; margin-bottom:1rem; cursor:default;">
+                </div>
 
                 <div id="cut-canvas-container">
-                    <div class="pizza-visual cooked" id="cut-pizza-visual">
-                        <div class="sauce"></div>
+                    <div class="pizza-visual" id="cut-pizza-visual">
+                        <div class="sauce" id="cut-sauce"></div>
                         <div id="cut-toppings-container"></div>
                     </div>
-                    <!-- Overlay for cuts -->
                     <svg id="cut-overlay"></svg>
                 </div>
 
-                <div id="cut-controls-row">
-                    <button id="btn-confirm-cut" onclick="finishCuttingMode()">Klaar met Snijden</button>
-                    <button class="action-btn" style="background:#e74c3c" onclick="resetCuts()">Opnieuw Snijden</button>
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    <button id="btn-confirm-cut" onclick="finishCuttingMode()" class="action-btn"
+                        style="background:var(--dark);">Klaar met Snijden</button>
+                    <button onclick="resetCuts()" class="action-btn" style="background:#e74c3c;">Reset</button>
+                    <button id="final-serve-btn" onclick="serveFinal()" class="action-btn"
+                        style="display:none; background:var(--accent); color:black;">🔔 Serveren!</button>
                 </div>
-
-                <button id="final-serve-btn" onclick="serveFinal()" style="display:none;">🔔 Serveren!</button>
             </div>
-
-            <div id="cutting-empty-msg" style="color:white; font-size:1.5rem; opacity:0.6;">
-                Selecteer een pizza uit de Oven om te snijden.
-            </div>
+            <div id="cutting-empty-msg" style="color:white; font-size:1.5rem; opacity:0.6;">Selecteer een pizza uit de
+                Oven.</div>
         </div>
 
     </div>
 
-    <!-- TABS -->
     <div id="nav-tabs">
-        <button class="nav-btn active" onclick="switchStation('prep')">
-            <span class="nav-icon">🥣</span>
-            Toppings
-        </button>
-        <button class="nav-btn" onclick="switchStation('oven')">
-            <span class="nav-icon">🔥</span>
-            Oven
-            <div class="badge" id="badge-oven">0</div>
-        </button>
-        <button class="nav-btn" onclick="switchStation('cutting')">
-            <span class="nav-icon">🔪</span>
-            Snijden
-            <div class="badge" id="badge-cut">0</div>
-        </button>
+        <button class="nav-btn active" onclick="switchStation('prep')"><span class="nav-icon">🥣</span>Preppen</button>
+        <button class="nav-btn" onclick="switchStation('oven')"><span class="nav-icon">🔥</span>Oven<div class="badge"
+                id="badge-oven">0</div></button>
+        <button class="nav-btn" onclick="switchStation('cutting')"><span class="nav-icon">🔪</span>Snijden</button>
     </div>
 
     <!-- FEEDBACK -->
     <div id="feedback-overlay">
         <div class="feedback-card">
             <h2 id="res-title">Resultaat</h2>
-            <div class="heat-meter">
-                <div class="heat-val" id="res-heat"></div>
+            <div style="width:100%; height:10px; background:#eee; margin:10px 0; border-radius:5px;">
+                <div id="res-heat" style="height:100%; width:80%; background:red;"></div>
             </div>
-            <p id="res-desc" style="text-align:left;"></p>
-            <h1 id="res-score" style="font-size:3rem; color:var(--primary);">+€15</h1>
-            <button class="action-btn" onclick="closeFeedback()">Doorgaan</button>
+            <p id="res-desc" style="text-align:left; font-size:0.95rem;"></p>
+            <h1 id="res-score" style="font-size:3rem; color:var(--primary);">+€0</h1>
+            <button class="action-btn" onclick="closeFeedback()">Volgende</button>
         </div>
+    </div>
+
+    <!-- DAY START -->
+    <div id="day-overlay">
+        <h1 id="day-title">Dag 1</h1>
+        <p>Dit heb je ontgrendeld:</p>
+        <ul class="unlock-list" id="unlock-list"></ul>
+        <button class="action-btn" onclick="startDayLoop()" style="font-size:1.5rem; margin-top:20px;">Start Dag
+            ➡</button>
     </div>
 
 
     <script>
-        // ================= GAME LOGIC =================
+        // DATA
+        const ITEMS = {
+            // Sauces
+            sauce_tomato: { type: 'sauce', name: 'Tomatensaus', color: '#D63031', icon: '🍅', day: 1 },
+            sauce_pesto: { type: 'sauce', name: 'Pesto', color: '#2ecc71', icon: '🌿', day: 2 },
+            sauce_bbq: { type: 'sauce', name: 'BBQ Saus', color: '#5D4037', icon: '🍖', day: 3 },
+            sauce_bianca: { type: 'sauce', name: 'Witte Saus', color: '#f5f6fa', icon: '🥛', day: 4 },
+            // Toppings
+            t_salami: { type: 'top', name: 'Salami', icon: '🍕', day: 1 },
+            t_olive: { type: 'top', name: 'Olijven', icon: '🫒', day: 2 },
+            t_shroom: { type: 'top', name: 'Champignons', icon: '🍄', day: 3 },
+            t_pepper: { type: 'top', name: 'Paprika', icon: '🫑', day: 4 },
+            t_corn: { type: 'top', name: 'Mais', icon: '🌽', day: 5 },
+            t_onion: { type: 'top', name: 'Ui', icon: '🧅', day: 6 }
+        };
+
         const GAME = {
-            day: 1,
-            money: 0,
-            activeStation: 'prep',
+            day: 1, money: 0, activeStation: 'prep',
+            orderQueue: [], autoOrderInterval: null,
 
             // Prep
-            prepOrder: null,
-            prepToppings: [],
-            activeTool: null,
-
+            activeOrder: null, prepToppings: [], prepSauce: null, activeTool: null,
             // Oven
             ovenSlots: [null, null, null, null],
-
             // Cutting
-            cuttingPizza: null,
-            cutLines: [], // Array of {x1,y1, x2,y2} (normalized 0-1 or px)
-            isSelectingMode: false,
-            selectedSlices: [], // Indices of slices selected
-            slices: [], // Calculated polygon slices
-
-            // Manual Cut state
-            isDragging: false,
-            dragStart: null,
-            dragCurrent: null
+            cuttingPizza: null, cutLines: [], selectedSlices: [], isSelecting: false,
+            cutState: { dragging: false, start: null, curr: null }
         };
 
-        const INGREDIENTS = {
-            salami: { icon: '🍕', name: 'Salami' },
-            olive: { icon: '🫒', name: 'Olijven' },
-            mushroom: { icon: '🍄', name: 'Champignons' }
-        };
+        // --- INIT & DAY LOOP ---
+        function init() {
+            showDayStart();
+        }
 
-        // --- LOOP ---
-        setInterval(updateOven, 100);
+        function showDayStart() {
+            document.getElementById('day-overlay').style.display = 'flex';
+            document.getElementById('day-title').textContent = `Dag ${GAME.day}`;
+            const list = document.getElementById('unlock-list');
+            list.innerHTML = '';
 
-        function updateOven() {
-            GAME.ovenSlots.forEach((pizza, idx) => {
-                if (!pizza) return;
-                if (pizza.state === 'BAKING') {
-                    pizza.bakeTime += 0.1;
-                    const BAKE_DURATION = 15.0;
-                    if (pizza.bakeTime >= BAKE_DURATION) {
-                        pizza.state = 'BAKED';
-                        pizza.heat = 100;
-                        updateOvenVisual(idx);
-                        updateBadges();
-                    }
-                    updateOvenTimer(idx, BAKE_DURATION - pizza.bakeTime);
-                } else if (pizza.state === 'BAKED') {
-                    pizza.heat -= 0.2;
-                    if (pizza.heat < 0) pizza.heat = 0;
-                    updateOvenHeat(idx, pizza.heat);
-                }
+            // Show Unlocks
+            const newItems = Object.values(ITEMS).filter(i => i.day === GAME.day);
+            if (newItems.length === 0 && GAME.day > 1) {
+                list.innerHTML = '<li class="unlock-item">Nog meer bestellingen!</li>';
+            } else {
+                newItems.forEach(i => {
+                    list.innerHTML += `<li class="unlock-item">+ ${i.name} ${i.icon}</li>`;
+                });
+            }
+            if (GAME.day === 1) list.innerHTML += '<li class="unlock-item">Basis Training</li>';
+
+            renderIngredientsBin();
+        }
+
+        function startDayLoop() {
+            document.getElementById('day-overlay').style.display = 'none';
+            GAME.orderQueue = [];
+            renderTickets();
+
+            // Start Auto Orders
+            // Speed increases with Day: 20s -> 15s -> 10s -> 5s min
+            let speed = Math.max(5000, 20000 - (GAME.day * 2000));
+            if (GAME.day === 1) speed = 9999999; // Day 1 manual only (scripted start)
+
+            if (GAME.autoOrderInterval) clearInterval(GAME.autoOrderInterval);
+            GAME.autoOrderInterval = setInterval(createAutoOrder, speed);
+
+            // Instant first order
+            createAutoOrder();
+        }
+
+        function renderIngredientsBin() {
+            const rack = document.getElementById('ingredients-rack');
+            rack.innerHTML = '';
+
+            Object.keys(ITEMS).forEach(k => {
+                const item = ITEMS[k];
+                const locked = item.day > GAME.day;
+                const cls = locked ? 'ingredient-bin locked' : 'ingredient-bin';
+                const click = locked ? '' : `onclick="setTool('${k}')"`;
+
+                rack.innerHTML += `
+                    <div class="${cls}" id="bin-${k}" ${click}>
+                        <span style="pointer-events:none">${item.icon}</span>
+                        <div class="bin-label">${item.name}</div>
+                    </div>
+                `;
             });
         }
 
-        // --- NAVIGATION ---
-        function switchStation(name) {
-            document.querySelectorAll('.station').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+        // --- ORDERS ---
+        function createAutoOrder() {
+            if (GAME.orderQueue.length >= 6) return; // Rail full
 
-            document.getElementById('station-' + name).classList.add('active');
-            GAME.activeStation = name;
+            // Generate Logic based on unlocked items
+            const unlockedSauces = Object.keys(ITEMS).filter(k => ITEMS[k].type === 'sauce' && ITEMS[k].day <= GAME.day);
+            const unlockedTops = Object.keys(ITEMS).filter(k => ITEMS[k].type === 'top' && ITEMS[k].day <= GAME.day);
 
-            const tabIdx = ['prep', 'oven', 'cutting'].indexOf(name);
-            document.querySelectorAll('.nav-btn')[tabIdx].classList.add('active');
+            const rSauce = unlockedSauces[Math.floor(Math.random() * unlockedSauces.length)];
+            const rTop = unlockedTops[Math.floor(Math.random() * unlockedTops.length)];
 
-            if (name === 'oven') renderOven();
-            if (name === 'cutting') renderCutting();
-        }
-
-        function updateBadges() {
-            const readyCount = GAME.ovenSlots.filter(p => p && p.state === 'BAKED').length;
-            const bOven = document.getElementById('badge-oven');
-            bOven.textContent = readyCount;
-            bOven.classList.toggle('visible', readyCount > 0);
-        }
-
-        // --- PREP ---
-        function startNewOrder() {
-            if (GAME.prepOrder) return;
-
-            const types = Object.keys(INGREDIENTS);
-            const type = types[Math.floor(Math.random() * types.length)];
-            const isAdd = Math.random() > 0.5;
+            // Math Difficulty
+            const isMult = GAME.day > 1 && Math.random() > 0.5;
             let n1, n2, target, txt;
-
-            if (isAdd) {
-                target = Math.floor(Math.random() * 8) + 4;
-                n1 = Math.floor(Math.random() * (target - 1)) + 1;
-                n2 = target - n1;
-                txt = `Som: <b style="color:#d35400">${n1} + ${n2}</b> x ${INGREDIENTS[type].name}`;
+            if (isMult) {
+                n1 = Math.floor(Math.random() * 3) + 2; n2 = Math.floor(Math.random() * 3) + 2; target = n1 * n2;
+                txt = `${n1} x ${n2}`;
             } else {
-                n1 = Math.floor(Math.random() * 3) + 2;
-                n2 = Math.floor(Math.random() * 3) + 2;
-                target = n1 * n2;
-                txt = `Som: <b style="color:#d35400">${n1} x ${n2}</b> x ${INGREDIENTS[type].name}`;
+                target = Math.floor(Math.random() * 8) + 4; n1 = Math.floor(Math.random() * (target - 1)) + 1; n2 = target - n1;
+                txt = `${n1} + ${n2}`;
             }
 
-            // Fraction Order
-            const denominators = [2, 4, 8]; // Keep it geometric (halving) for manual cut ease
-            const denom = denominators[Math.floor(Math.random() * denominators.length)];
-            const num = Math.floor(Math.random() * (denom - 1)) + 1; // 1 to denom
+            // Fractions
+            const denoms = GAME.day > 2 ? [2, 4, 8, 3, 6] : [2, 4, 8];
+            const denom = denoms[Math.floor(Math.random() * denoms.length)];
+            const num = Math.floor(Math.random() * (denom - 1)) + 1;
 
-            txt += `<br>Wil graag <b>${num}/${denom}</b> pizza.`;
+            // Special
+            const special = (GAME.day > 3 && Math.random() > 0.7) ? 'extra_crispy' : null;
 
-            GAME.prepOrder = {
-                id: Date.now(),
-                text: txt,
-                targetType: type,
+            const order = {
+                id: Date.now() + Math.random(),
+                table: Math.floor(Math.random() * 10) + 1,
+                text_math: txt,
+                text_frac: `${num}/${denom}`,
+                reqSauce: rSauce,
+                reqTop: rTop,
                 targetCount: target,
                 reqNum: num,
-                reqDenom: denom
+                reqDenom: denom,
+                special: special
             };
-            GAME.prepToppings = [];
-            GAME.activeTool = null;
 
-            renderPrepTicket();
-            document.getElementById('prep-toppings-container').innerHTML = '';
+            GAME.orderQueue.push(order);
+            renderTickets();
+        }
+
+        function renderTickets() {
+            const rail = document.getElementById('ticket-rail');
+            rail.innerHTML = '';
+            GAME.orderQueue.forEach(o => {
+                const active = GAME.activeOrder && GAME.activeOrder.id === o.id;
+                const cls = active ? 'ticket active-prep' : 'ticket';
+                const crisp = o.special ? '<br><b style="color:red">⚠️ EXTRA KROKANT!</b>' : '';
+
+                rail.innerHTML += `
+                    <div class="${cls}" onclick="activateTicket(${o.id})">
+                        <b>Tafel ${o.table}</b><br>
+                        ${ITEMS[o.reqSauce].name}<br>
+                        ${o.text_math} ${ITEMS[o.reqTop].name}<br>
+                        Snij: ${o.text_frac}
+                        ${crisp}
+                    </div>
+                `;
+            });
+        }
+
+        function activateTicket(id) {
+            if (GAME.activeOrder) return; // Must clear board first
+            const order = GAME.orderQueue.find(o => o.id === id);
+            if (!order) return;
+
+            GAME.activeOrder = order;
+            GAME.prepToppings = [];
+            GAME.prepSauce = null;
+            updatePrepInfo();
+            renderTickets();
             document.getElementById('btn-to-oven').disabled = false;
         }
 
-        function renderPrepTicket() {
-            const area = document.getElementById('active-ticket-area');
-            if (!GAME.prepOrder) {
-                area.innerHTML = '<div class="ticket empty" onclick="startNewOrder()"><span style="font-size:2rem; font-weight:bold; color:#777;">+ NIEUWE BESTELLING</span></div>';
-            } else {
-                area.innerHTML = `<div class="ticket"><div style="font-size:1.2rem; line-height:1.5;">${GAME.prepOrder.text}</div></div>`;
+        function updatePrepInfo() {
+            const info = document.getElementById('current-order-info');
+            const p = document.getElementById('prep-pizza');
+            const s = document.getElementById('prep-sauce');
+            const c = document.getElementById('prep-toppings-container');
+
+            if (!GAME.activeOrder) {
+                info.innerHTML = "Kies een bon...";
+                s.style.backgroundColor = '#e6e6e6';
+                c.innerHTML = '';
+                return;
             }
+
+            const o = GAME.activeOrder;
+            info.innerHTML = `
+                <b>Huidige Bestelling:</b><br><br>
+                1. Saus: ${ITEMS[o.reqSauce].name}<br>
+                2. Toppings: ${o.text_math} (= <b>${o.targetCount}</b>) ${ITEMS[o.reqTop].name}<br>
+                3. Special: ${o.special ? 'EXTRA KROKANT' : '-'}<br>
+            `;
+
+            // Render Sauce
+            s.style.backgroundColor = GAME.prepSauce ? ITEMS[GAME.prepSauce].color : '#e6e6e6';
+
+            // Render Tops
+            c.innerHTML = '';
+            GAME.prepToppings.forEach(t => {
+                const el = document.createElement('div'); el.className = 'topping-item';
+                el.textContent = ITEMS[t.type].icon;
+                el.style.left = t.x + 'px'; el.style.top = t.y + 'px';
+                el.style.transform = `translate(-50%,-50%) rotate(${Math.random() * 360}deg)`;
+                c.appendChild(el);
+            });
         }
 
+        // --- PREP ACTIONS ---
         function setTool(t) {
             GAME.activeTool = t;
             document.querySelectorAll('.ingredient-bin').forEach(b => b.classList.remove('active'));
-            if (t) document.getElementById('bin-' + t).classList.add('active');
+            const btn = document.getElementById('bin-' + t);
+            if (btn) btn.classList.add('active');
         }
 
         function handlePrepClick(e) {
-            if (!GAME.prepOrder || !GAME.activeTool) return;
+            if (!GAME.activeOrder || !GAME.activeTool) return;
+
+            const item = ITEMS[GAME.activeTool];
+
+            // Sauce Logic
+            if (item.type === 'sauce') {
+                GAME.prepSauce = GAME.activeTool;
+                updatePrepInfo();
+                return;
+            }
+
+            // Topping Logic
             const rect = document.getElementById('prep-pizza').getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            const dist = Math.sqrt((x - 190) ** 2 + (y - 190) ** 2); // 380/2 = 190 radius
-            if (dist > 170) return;
+            const x = e.clientX - rect.left; const y = e.clientY - rect.top;
+            const dist = Math.sqrt((x - 190) ** 2 + (y - 190) ** 2);
+            if (dist > 175) return;
 
-            const el = document.createElement('div');
-            el.className = 'topping-item';
-            el.textContent = INGREDIENTS[GAME.activeTool].icon;
-            el.style.left = x + 'px';
-            el.style.top = y + 'px';
-            el.style.transform = `translate(-50%, -50%) rotate(${Math.random() * 360}deg)`;
-            document.getElementById('prep-toppings-container').appendChild(el);
-
-            GAME.prepToppings.push({ type: GAME.activeTool, x: x, y: y });
+            GAME.prepToppings.push({ type: GAME.activeTool, x, y });
+            updatePrepInfo();
         }
 
         function trashPrep() {
-            GAME.prepOrder = null;
-            renderPrepTicket();
-            document.getElementById('prep-toppings-container').innerHTML = '';
-            document.getElementById('btn-to-oven').disabled = true;
+            if (!GAME.activeOrder) return;
+            // Only clear ingredients, keep order active? No, let's reset ingredients only.
+            GAME.prepToppings = [];
+            GAME.prepSauce = null;
+            updatePrepInfo();
         }
 
         function movePrepToOven() {
-            if (!GAME.prepOrder) return;
-            const slotIdx = GAME.ovenSlots.findIndex(s => s === null);
-            if (slotIdx === -1) {
-                alert("Oven zit vol!");
-                return;
-            }
-            GAME.ovenSlots[slotIdx] = {
-                order: GAME.prepOrder,
+            if (!GAME.activeOrder) return;
+            const idx = GAME.ovenSlots.findIndex(s => s === null);
+            if (idx === -1) { alert("Oven vol!"); return; }
+
+            GAME.ovenSlots[idx] = {
+                order: GAME.activeOrder,
                 toppings: [...GAME.prepToppings],
+                sauce: GAME.prepSauce,
                 state: 'BAKING',
                 bakeTime: 0,
                 heat: 0
             };
-            trashPrep();
+
+            // Remove from queue
+            GAME.orderQueue = GAME.orderQueue.filter(o => o.id !== GAME.activeOrder.id);
+            GAME.activeOrder = null;
+            GAME.prepToppings = []; GAME.prepSauce = null;
+
+            updatePrepInfo();
+            renderTickets();
+            document.getElementById('btn-to-oven').disabled = true;
         }
 
         // --- OVEN ---
-        function renderOven() { GAME.ovenSlots.forEach((p, i) => updateOvenVisual(i)); }
-        function updateOvenVisual(idx) {
-            const slotEl = document.getElementById('slot-' + idx);
-            const pizza = GAME.ovenSlots[idx];
+        setInterval(() => {
+            GAME.ovenSlots.forEach((p, i) => {
+                if (!p) return;
+                if (p.state === 'BAKING') {
+                    p.bakeTime += 0.1;
+                    const BAKE_NORM = 15;
+                    // If special request, it needs more time
+                    const BAKE_REQ = p.order.special === 'extra_crispy' ? 22 : 15;
 
-            if (!pizza) { slotEl.innerHTML = ''; return; }
+                    if (p.bakeTime >= BAKE_REQ && p.state !== 'BAKED') {
+                        // It becomes "Ready" visually, but if standard pizza waits too long it burns?
+                        // For now keep simple: It's Done.
+                        p.state = 'BAKED';
+                        p.heat = 100;
+                        updateBadges();
+                    }
+                    renderOvenSlot(i);
+                } else if (p.state === 'BAKED') {
+                    p.heat -= 0.15; // Slow decay
+                    if (p.heat < 0) p.heat = 0;
+                    renderOvenSlot(i);
+                }
+            });
+        }, 100);
 
-            // Render scaled toppings
-            let toppingsHTML = '';
-            pizza.toppings.forEach(t => {
-                toppingsHTML += `<div style="position:absolute; left:${t.x * 0.5}px; top:${t.y * 0.5}px; font-size:12px; transform:translate(-50%, -50%); pointer-events:none;">${INGREDIENTS[t.type].icon}</div>`;
+        function renderOvenSlot(i) {
+            const el = document.getElementById('slot-' + i);
+            const p = GAME.ovenSlots[i];
+            if (!p) { el.innerHTML = ''; return; }
+
+            let html = '<div class="oven-fire"></div>';
+
+            // Pizza Visual
+            const sColor = p.sauce ? ITEMS[p.sauce].color : '#e6e6e6';
+            let tops = '';
+            p.toppings.forEach(t => {
+                tops += `<div style="position:absolute; left:${t.x * 0.4}px; top:${t.y * 0.4}px; font-size:10px; transform:translate(-50%,-50%)">${ITEMS[t.type].icon}</div>`;
             });
 
-            const cssClass = pizza.state === 'BAKING' ? 'baking' : 'done';
-            let info = pizza.state === 'BAKING'
-                ? `<div class="oven-timer" id="timer-${idx}">...</div>`
-                : `<div class="oven-timer" style="background:var(--success)">KLAAR!</div><div class="oven-temp-gauge"><div class="oven-temp-fill" id="heat-${idx}" style="height:${pizza.heat}%"></div></div>`;
+            const isCrispy = p.bakeTime > 20;
+            const css = p.state === 'BAKED' ? (isCrispy ? 'oven-pizza crispy' : 'oven-pizza done') : 'oven-pizza';
 
-            slotEl.innerHTML = `
-                <div class="oven-fire"></div>${info}
-                <div class="pizza-visual oven-pizza ${cssClass}" onclick="clickOvenPizza(${idx})" style="width:190px; height:190px; border-width:4px;">
-                    <div class="sauce"></div>${toppingsHTML}
-                </div>`;
-        }
-        function updateOvenTimer(idx, t) { const el = document.getElementById(`timer-${idx}`); if (el) el.textContent = Math.ceil(t) + "s"; }
-        function updateOvenHeat(idx, h) { const el = document.getElementById(`heat-${idx}`); if (el) { el.style.height = h + "%"; el.style.background = h < 30 ? '#3498db' : h < 60 ? '#f1c40f' : '#e74c3c'; } }
+            html += `
+                <div class="pizza-visual ${css}" onclick="clickOven(${i})" style="width:160px; height:160px; border-width:4px;">
+                    <div class="sauce" style="background:${sColor}"></div>
+                    ${tops}
+                </div>
+            `;
 
-        function clickOvenPizza(idx) {
-            const pizza = GAME.ovenSlots[idx];
-            if (!pizza || pizza.state !== 'BAKED') return;
-            if (GAME.cuttingPizza) { alert("Maak eerst de pizza op de snijplank af!"); return; }
-
-            GAME.cuttingPizza = pizza;
-            GAME.ovenSlots[idx] = null;
-            renderOven();
-            updateBadges();
-
-            // Reset Cutting Stage
-            GAME.cutLines = [];
-            GAME.selectedSlices = [];
-            GAME.isSelectingMode = false;
-            switchStation('cutting');
-        }
-
-        // --- CUTTING & SELECTING ---
-        function renderCutting() {
-            const container = document.getElementById('cutting-board-area');
-            const emptyMsg = document.getElementById('cutting-empty-msg');
-
-            if (!GAME.cuttingPizza) {
-                container.style.display = 'none'; emptyMsg.style.display = 'block';
-                return;
-            }
-            container.style.display = 'flex'; emptyMsg.style.display = 'none';
-
-            // Ticket
-            document.getElementById('cut-ticket-display').innerHTML = `<div style="font-size:1.2rem;">${GAME.cuttingPizza.order.text}</div>`;
-
-            // Toppings
-            const topCont = document.getElementById('cut-toppings-container');
-            topCont.innerHTML = '';
-            GAME.cuttingPizza.toppings.forEach(t => {
-                const el = document.createElement('div');
-                el.className = 'topping-item';
-                el.textContent = INGREDIENTS[t.type].icon;
-                el.style.left = t.x + 'px';
-                el.style.top = t.y + 'px';
-                topCont.appendChild(el);
-            });
-
-            updateCuttingStateUI();
-        }
-
-        function updateCuttingStateUI() {
-            const header = document.getElementById('cutting-header');
-            const instr = document.getElementById('cut-instructions');
-            const btnConfirm = document.getElementById('btn-confirm-cut');
-            const btnServe = document.getElementById('final-serve-btn');
-            const controls = document.getElementById('cut-controls-row');
-
-            if (!GAME.isSelectingMode) {
-                // CUTTING MODE
-                header.textContent = "Stap 1: Snijden";
-                instr.textContent = "Sleep rechte lijnen door het midden van de pizza.";
-                btnConfirm.style.display = 'block';
-                controls.style.display = 'flex';
-                btnServe.style.display = 'none';
-
-                // SVG Interaction
-                setupCuttingInteraction();
+            if (p.state === 'BAKING') {
+                html += `<div class="oven-timer">${Math.floor(p.bakeTime)}s</div>`;
             } else {
-                // SELECTING MODE
-                header.textContent = "Stap 2: Kiezen";
-                instr.textContent = `Klik op de punten om ${GAME.cuttingPizza.order.reqNum} van de ${GAME.cuttingPizza.order.reqDenom} delen te selecteren.`;
-                btnConfirm.style.display = 'none';
-                controls.style.display = 'flex'; // Keep reset button
-                btnServe.style.display = 'block';
-
-                // SVG Interaction
-                setupSelectionInteraction();
+                html += `<div class="oven-timer" style="background:#27ae60">KLAAR</div>`;
+                html += `<div class="oven-temp-gauge"><div class="oven-temp-fill" style="height:${p.heat}%"></div></div>`;
             }
-            drawCutOverlay();
+            if (p.order.special) html += `<div style="position:absolute; top:35px; right:10px; font-size:1.5rem;">⚠️</div>`;
+
+            el.innerHTML = html;
         }
 
-        // Manual Cutting Logic
+        function clickOven(i) {
+            const p = GAME.ovenSlots[i];
+            if (!p || p.state !== 'BAKED') return;
+
+            if (GAME.cuttingPizza) { alert("Maak de snijplank eerst leeg!"); return; }
+
+            GAME.cuttingPizza = p;
+            GAME.ovenSlots[i] = null;
+
+            // Init Cut State
+            GAME.cutLines = []; GAME.selectedSlices = []; GAME.isSelecting = false;
+
+            // Switch
+            renderOvenSlot(i);
+            switchStation('cutting');
+            updateBadges();
+        }
+
+        // --- CUTTING ---
+        function switchStation(s) {
+            document.querySelectorAll('.station').forEach(e => e.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(e => e.classList.remove('active'));
+            document.getElementById('station-' + s).classList.add('active');
+
+            const idx = ['prep', 'oven', 'cutting'].indexOf(s);
+            document.querySelectorAll('.nav-btn')[idx].classList.add('active');
+
+            if (s === 'cutting') renderCutting();
+        }
+        function updateBadges() {
+            const n = GAME.ovenSlots.filter(p => p && p.state === 'BAKED').length;
+            const b = document.getElementById('badge-oven');
+            b.textContent = n; b.classList.toggle('visible', n > 0);
+        }
+
+        // Cutting Visuals
         const cutOverlay = document.getElementById('cut-overlay');
+        function renderCutting() {
+            const area = document.getElementById('cutting-board-area');
+            const msg = document.getElementById('cutting-empty-msg');
 
-        function setupCuttingInteraction() {
-            cutOverlay.onmousedown = (e) => {
-                if (GAME.isSelectingMode) return;
-                const r = cutOverlay.getBoundingClientRect();
-                GAME.isDragging = true;
-                GAME.dragStart = { x: e.clientX - r.left, y: e.clientY - r.top };
-                GAME.dragCurrent = { x: e.clientX - r.left, y: e.clientY - r.top };
-            };
-            window.onmousemove = (e) => {
-                if (!GAME.isDragging) return;
-                const r = cutOverlay.getBoundingClientRect();
-                GAME.dragCurrent = { x: e.clientX - r.left, y: e.clientY - r.top };
-                drawCutOverlay(); // Update visual of drag line
-            };
-            window.onmouseup = (e) => {
-                if (!GAME.isDragging) return;
-                GAME.isDragging = false;
-                // Finalize Cut
-                addCutLine(GAME.dragStart, GAME.dragCurrent);
-                drawCutOverlay();
-            };
-        }
+            if (!GAME.cuttingPizza) { area.style.display = 'none'; msg.style.display = 'block'; return; }
+            area.style.display = 'flex'; msg.style.display = 'none';
 
-        function setupSelectionInteraction() {
-            cutOverlay.onmousedown = null; // Disable cut
-            // Selection clicks are handled by SVG elements directly in drawCutOverlay
-        }
+            const p = GAME.cuttingPizza;
+            document.getElementById('cut-ticket-display').innerHTML = `
+                Opdracht:<br>
+                Snij in <b>${p.order.reqDenom}</b> stukken<br>
+                Kies <b>${p.order.reqNum}</b> deel.
+            `;
 
-        function addCutLine(p1, p2) {
-            // Validate length
-            const dist = Math.sqrt((p2.x - p1.x) ** 2 + (p2.y - p1.y) ** 2);
-            if (dist < 50) return; // Too short
-
-            // Snap to center?
-            // Pizza center is 200, 200 (Container is 400x400)
-            const cx = 200, cy = 200;
-
-            // Simple logic: store the line as passing through center if it's close enough? 
-            // Better: Just store the angle of the line and render full diameter.
-            // Calculate angle
-            const angle = Math.atan2(p2.y - p1.y, p2.x - p1.x);
-
-            // Store normalized line (passing through center for simplicity in this kids game)
-            // Or allow non-center cuts? Requirement: "Rechte lijn". 
-            // If they miss center, slices are weird. Let's auto-snap to center for gameplay feel.
-
-            // To prevent duplicates, check angle diff
-            const existing = GAME.cutLines.some(l => Math.abs(l - angle) < 0.1 || Math.abs(l - angle - Math.PI) < 0.1);
-            if (!existing) {
-                GAME.cutLines.push(angle);
-            }
-        }
-
-        function drawCutOverlay() {
-            cutOverlay.innerHTML = '';
-
-            // Draw finalized lines
-            GAME.cutLines.forEach(angle => {
-                const r = 250; // plenty long
-                const x1 = 200 + r * Math.cos(angle);
-                const y1 = 200 + r * Math.sin(angle);
-                const x2 = 200 - r * Math.cos(angle); // Diameter
-                const y2 = 200 - r * Math.sin(angle);
-
-                const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-                line.setAttribute("x1", x1); line.setAttribute("y1", y1);
-                line.setAttribute("x2", x2); line.setAttribute("y2", y2);
-                line.setAttribute("class", "cut-line-visual");
-                cutOverlay.appendChild(line);
+            // Render Pizza
+            const s = document.getElementById('cut-sauce');
+            const c = document.getElementById('cut-toppings-container');
+            s.style.backgroundColor = p.sauce ? ITEMS[p.sauce].color : '#e6e6e6';
+            c.innerHTML = '';
+            p.toppings.forEach(t => {
+                const el = document.createElement('div'); el.className = 'topping-item';
+                el.textContent = ITEMS[t.type].icon;
+                el.style.left = t.x + 'px'; el.style.top = t.y + 'px';
+                el.style.transform = `translate(-50%,-50%) rotate(${Math.random() * 360}deg)`;
+                c.appendChild(el);
             });
 
-            // Draw current drag line
-            if (GAME.isDragging) {
-                const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
-                line.setAttribute("x1", GAME.dragStart.x); line.setAttribute("y1", GAME.dragStart.y);
-                line.setAttribute("x2", GAME.dragCurrent.x); line.setAttribute("y2", GAME.dragCurrent.y);
-                line.setAttribute("stroke", "orange");
-                line.setAttribute("stroke-width", "4");
-                cutOverlay.appendChild(line);
-            }
+            renderCutOverlay();
+            updateCutControls();
 
-            // Draw Slices if Selecting
-            if (GAME.isSelectingMode) {
-                renderSlices();
+            // Bind Events
+            if (!GAME.isSelecting) {
+                cutOverlay.onmousedown = cutDown;
+                window.onmousemove = cutMove;
+                window.onmouseup = cutUp;
+            } else {
+                cutOverlay.onmousedown = null; window.onmousemove = null; window.onmouseup = null;
             }
+        }
+
+        function renderCutOverlay() {
+            cutOverlay.innerHTML = '';
+            // Finals
+            GAME.cutLines.forEach(a => {
+                const x1 = 200 + 200 * Math.cos(a); const y1 = 200 + 200 * Math.sin(a);
+                const x2 = 200 - 200 * Math.cos(a); const y2 = 200 - 200 * Math.sin(a);
+                drawLine(x1, y1, x2, y2, 'cut-line-visual');
+            });
+            // Drag
+            if (GAME.cutState.dragging) {
+                drawLine(GAME.cutState.start.x, GAME.cutState.start.y, GAME.cutState.curr.x, GAME.cutState.curr.y, 'cut-line-visual', 'orange');
+            }
+            // Slices (if selecting)
+            if (GAME.isSelecting) renderSlices();
+        }
+
+        function drawLine(x1, y1, x2, y2, cls, stroke) {
+            const l = document.createElementNS("http://www.w3.org/2000/svg", "line");
+            l.setAttribute('x1', x1); l.setAttribute('y1', y1); l.setAttribute('x2', x2); l.setAttribute('y2', y2);
+            l.setAttribute('class', cls);
+            if (stroke) l.setAttribute('stroke', stroke);
+            cutOverlay.appendChild(l);
+        }
+
+        function cutDown(e) {
+            if (GAME.isSelecting) return;
+            const r = cutOverlay.getBoundingClientRect();
+            GAME.cutState.dragging = true;
+            GAME.cutState.start = { x: e.clientX - r.left, y: e.clientY - r.top };
+            GAME.cutState.curr = GAME.cutState.start;
+        }
+        function cutMove(e) {
+            if (!GAME.cutState.dragging) return;
+            const r = cutOverlay.getBoundingClientRect();
+            GAME.cutState.curr = { x: e.clientX - r.left, y: e.clientY - r.top };
+            renderCutOverlay();
+        }
+        function cutUp(e) {
+            if (!GAME.cutState.dragging) return;
+            GAME.cutState.dragging = false;
+            // Add Line
+            const dx = GAME.cutState.curr.x - GAME.cutState.start.x;
+            const dy = GAME.cutState.curr.y - GAME.cutState.start.y;
+            if (Math.sqrt(dx * dx + dy * dy) > 50) {
+                const angle = Math.atan2(dy, dx);
+                // Snap to unique
+                const exists = GAME.cutLines.some(a => Math.abs(a - angle) < 0.2 || Math.abs(a - angle - Math.PI) < 0.2);
+                if (!exists) GAME.cutLines.push(angle);
+            }
+            renderCutOverlay();
         }
 
         function renderSlices() {
-            // Sort angles to form wedges
-            // Each line creates 2 angles (a and a+PI)
+            // Sort angles
             let angles = [];
             GAME.cutLines.forEach(a => {
-                let norm = a % (2 * Math.PI);
-                if (norm < 0) norm += 2 * Math.PI;
-                angles.push(norm);
-                angles.push((norm + Math.PI) % (2 * Math.PI));
+                let n = a % (2 * Math.PI); if (n < 0) n += 2 * Math.PI;
+                angles.push(n); angles.push((n + Math.PI) % (2 * Math.PI));
             });
             angles.sort((a, b) => a - b);
+            if (angles.length === 0) angles = [0, 2 * Math.PI]; else angles.push(angles[0] + 2 * Math.PI);
 
-            if (angles.length === 0) {
-                // 1 slice (whole pizza)
-                angles = [0, 2 * Math.PI];
-            } else {
-                // Close the loop
-                angles.push(angles[0] + 2 * Math.PI);
-            }
-
-            // Create wedges
             const cx = 200, cy = 200, r = 190;
+
             for (let i = 0; i < angles.length - 1; i++) {
-                const a1 = angles[i];
-                const a2 = angles[i + 1];
+                const a1 = angles[i]; const a2 = angles[i + 1];
+                const x1 = cx + r * Math.cos(a1); const y1 = cy + r * Math.sin(a1);
+                const x2 = cx + r * Math.cos(a2); const y2 = cy + r * Math.sin(a2);
+                const big = (a2 - a1) > Math.PI ? 1 : 0;
 
-                // SVG Path for arc
-                const x1 = cx + r * Math.cos(a1);
-                const y1 = cy + r * Math.sin(a1);
-                const x2 = cx + r * Math.cos(a2);
-                const y2 = cy + r * Math.sin(a2);
+                const d = `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${big} 1 ${x2} ${y2} Z`;
 
-                const largeArc = (a2 - a1) > Math.PI ? 1 : 0;
-
-                const d = `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${largeArc} 1 ${x2} ${y2} Z`;
-
-                const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
-                path.setAttribute("d", d);
-                path.setAttribute("class", "slice-wedge " + (GAME.selectedSlices.includes(i) ? "selected" : ""));
-
-                // Click to toggle
-                path.onmousedown = (e) => {
-                    e.stopPropagation();
-                    toggleSlice(i);
-                };
-
-                cutOverlay.appendChild(path);
+                const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                p.setAttribute('d', d);
+                p.setAttribute('class', 'slice-wedge ' + (GAME.selectedSlices.includes(i) ? 'selected' : ''));
+                p.onmousedown = (ev) => { ev.stopPropagation(); toggleSlice(i); };
+                cutOverlay.appendChild(p);
             }
         }
 
-        function toggleSlice(idx) {
-            if (!GAME.isSelectingMode) return;
-            const pos = GAME.selectedSlices.indexOf(idx);
-            if (pos >= 0) GAME.selectedSlices.splice(pos, 1);
-            else GAME.selectedSlices.push(idx);
-            drawCutOverlay();
+        function toggleSlice(i) {
+            const idx = GAME.selectedSlices.indexOf(i);
+            if (idx >= 0) GAME.selectedSlices.splice(idx, 1); else GAME.selectedSlices.push(i);
+            renderCutOverlay();
         }
 
-        function resetCuts() {
-            GAME.cutLines = [];
-            GAME.selectedSlices = [];
-            GAME.isSelectingMode = false;
-            updateCuttingStateUI();
+        function updateCutControls() {
+            const s = GAME.isSelecting;
+            document.getElementById('cut-instructions').textContent = s ? "Klik op de stukken om te selecteren." : "Sleep lijnen om de pizza te snijden.";
+            document.getElementById('btn-confirm-cut').style.display = s ? 'none' : 'block';
+            document.getElementById('final-serve-btn').style.display = s ? 'block' : 'none';
         }
+        function finishCuttingMode() { GAME.isSelecting = true; updateCutControls(); renderCutOverlay(); }
+        function resetCuts() { GAME.cutLines = []; GAME.selectedSlices = []; GAME.isSelecting = false; updateCutControls(); renderCutOverlay(); }
 
-        function finishCuttingMode() {
-            GAME.isSelectingMode = true;
-            updateCuttingStateUI();
-        }
-
+        // --- SERVE & SCORE ---
         function serveFinal() {
-            if (!GAME.cuttingPizza) return;
+            const p = GAME.cuttingPizza;
+            const o = p.order;
+            let log = ''; let score = 0; let perfect = true;
 
-            // Calculate Pieces count
-            // Each line passing center adds 2 pieces? 
-            // If they are unique angles. N lines = 2N pieces usually.
+            // 1. Sauce
+            if (p.sauce !== o.reqSauce) { log += `❌ Verkeerde saus.<br>`; perfect = false; }
+
+            // 2. Count
+            const count = p.toppings.filter(t => t.type === o.reqTop).length;
+            if (count !== o.targetCount) { log += `❌ Toppings: ${count} ipv ${o.targetCount}.<br>`; perfect = false; }
+            if (p.toppings.length !== count) { log += `❌ Verkeerde ingrediënten.<br>`; perfect = false; }
+
+            // 3. Bake (Crispy?)
+            if (o.special === 'extra_crispy') {
+                if (p.bakeTime < 20) { log += `⚠️ Niet krokant genoeg!<br>`; perfect = false; }
+                else { log += `✅ Lekker krokant!<br>`; score += 5; }
+            }
+
+            // 4. Cuts & Fractions
             const totalSlices = GAME.cutLines.length * 2 || 1;
-            const selectedCount = GAME.selectedSlices.length;
+            const picked = GAME.selectedSlices.length;
 
-            const reqDenom = GAME.cuttingPizza.order.reqDenom;
-            const reqNum = GAME.cuttingPizza.order.reqNum;
+            const reqVal = o.reqNum / o.reqDenom;
+            const actVal = picked / totalSlices;
 
-            // Validation
-            let desc = "";
-            let score = 0;
-            let good = true;
-
-            // 1. Check Toppings
-            const tType = GAME.cuttingPizza.order.targetType;
-            const tCount = GAME.cuttingPizza.order.targetCount;
-            const actCount = GAME.cuttingPizza.toppings.filter(t => t.type === tType).length;
-            if (actCount != tCount) { desc += `❌ Toppingaantal fout (${actCount}/${tCount})<br>`; good = false; }
-
-            // 2. Check Cuts (Denominator)
-            if (totalSlices !== reqDenom) {
-                desc += `❌ Verkeerd gesneden (${totalSlices} stukken ipv ${reqDenom})<br>`;
-                good = false;
+            if (Math.abs(reqVal - actVal) < 0.01) {
+                // Math is correct
+                if (totalSlices !== o.reqDenom) {
+                    log += `⚠️ Portie klopt, maar ik wilde ${o.reqDenom} stukken (jij gaf ${totalSlices}).<br>`;
+                    score += 5; // Partial points
+                } else {
+                    log += `✅ Perfect gesneden!<br>`;
+                    score += 15;
+                }
             } else {
-                desc += `✅ Goed gesneden in ${totalSlices} stukken!<br>`;
+                log += `❌ Verkeerde portie (${picked}/${totalSlices} ipv ${o.reqNum}/${o.reqDenom}).<br>`;
+                perfect = false;
             }
 
-            // 3. Check Selection (Numerator)
-            if (selectedCount !== reqNum) {
-                desc += `❌ Verkeerd gekozen (${selectedCount} stukken ipv ${reqNum})<br>`;
-                good = false;
-            } else {
-                desc += `✅ Goede portie gekozen (${selectedCount}/${totalSlices})<br>`;
-            }
-
-            // Scoring
-            if (good) {
-                const heat = GAME.cuttingPizza.heat;
-                let bonus = 0;
-                if (heat > 80) { bonus = 5; desc += "🔥 Lekker heet! (+5)"; }
-                else if (heat < 30) { bonus = -2; desc += "🧊 Koud... (-2)"; }
-                score = 25 + bonus;
-                document.getElementById('res-title').textContent = "Excellent!";
+            if (perfect) {
+                score += 20;
+                document.getElementById('res-title').textContent = "Uitmuntend!";
                 document.getElementById('res-score').style.color = "var(--success)";
             } else {
-                score = 0;
-                document.getElementById('res-title').textContent = "Helaas...";
-                document.getElementById('res-score').style.color = "gray";
+                document.getElementById('res-title').textContent = "Kan beter...";
+                document.getElementById('res-score').style.color = score > 0 ? "orange" : "var(--danger)";
             }
+
+            // Heat bonus
+            if (p.heat > 70) { score += 5; log += `🔥 Lekker warm (+5)`; }
 
             GAME.money += score;
             document.getElementById('score-display').textContent = GAME.money;
-
-            // Feedback
-            document.getElementById('res-desc').innerHTML = desc;
-            document.getElementById('res-score').textContent = "+€" + score;
-            document.getElementById('res-heat').style.width = GAME.cuttingPizza.heat + "%";
+            document.getElementById('res-desc').innerHTML = log;
+            document.getElementById('res-score').textContent = `+€${score}`;
+            document.getElementById('res-heat').style.width = p.heat + "%";
             document.getElementById('feedback-overlay').classList.add('visible');
 
+            // Day Prog
+            if (GAME.money > GAME.day * 150) { // Threshhold
+                GAME.day++;
+                document.getElementById('day-display').textContent = GAME.day;
+            }
             GAME.cuttingPizza = null;
         }
 
@@ -1237,10 +1243,23 @@
             resetCuts();
             renderCutting();
             switchStation('prep');
-            updateBadges(); // might still have pizzas
+            if (GAME.cuttingPizza === null && GAME.orderQueue.length === 0 && GAME.day > 1 && Math.random() > 0.8) {
+                // Random check to show day screen? No, stick to money threshold above
+            }
+            // Should we trigger day screen if day increased?
+            const dDisp = parseInt(document.getElementById('day-display').textContent);
+            if (dDisp > GAME.day) { // Caught up?
+                // already handled
+            }
+            // Logic fix: The Day display updated in serveFinal. Check if we just leveled up logic?
+            // Since I stored GAME.day++, if items for new day exist, show screen?
+            const newItems = Object.values(ITEMS).filter(i => i.day === GAME.day);
+            if (newItems.length > 0 && document.getElementById('day-title').textContent !== `Dag ${GAME.day}`) {
+                showDayStart();
+            }
         }
 
-        startNewOrder();
+        init();
 
     </script>
 </body>
