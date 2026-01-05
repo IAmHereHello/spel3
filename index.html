@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <html lang="nl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pizza Pythagoras</title>
+    <title>Pizza Pythagoras - De Pizzeria</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
@@ -19,6 +20,8 @@
             --pizza-crust: #E6A15C;
             --pizza-sauce: #D63031;
             --cheese: #FFEAA7;
+            --metal: #95a5a6;
+            --wood: #8e44ad;
         }
 
         * {
@@ -29,13 +32,21 @@
 
         body {
             font-family: 'Outfit', sans-serif;
-            background-color: var(--light);
+            background-color: #333;
+            /* Chequered floor pattern */
+            background-image:
+                linear-gradient(45deg, #222 25%, transparent 25%),
+                linear-gradient(-45deg, #222 25%, transparent 25%),
+                linear-gradient(45deg, transparent 75%, #222 75%),
+                linear-gradient(-45deg, transparent 75%, #222 75%);
+            background-size: 40px 40px;
+            background-position: 0 0, 0 20px, 20px -20px, -20px 0px;
             color: var(--dark);
             margin: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
-            min-height: 100vh;
+            height: 100vh;
             overflow: hidden;
         }
 
@@ -43,12 +54,12 @@
         header {
             width: 100%;
             background: white;
-            padding: 1rem 2rem;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);
+            padding: 0.8rem 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            z-index: 10;
+            z-index: 20;
         }
 
         .stats {
@@ -65,187 +76,310 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            border: 2px solid #eee;
         }
 
-        .stat-icon { font-size: 1.5rem; }
-
-        /* GAME AREA */
-        #game-container {
+        /* GAME AREA - THE KITCHEN */
+        #kitchen-container {
             flex: 1;
+            width: 100%;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
-            width: 100%;
-            max-width: 800px;
             position: relative;
         }
 
-        /* CUSTOMER BUBBLE */
-        #customer-area {
+        /* TICKET RAIL */
+        #ticket-rail {
             width: 100%;
+            height: 120px;
+            background: #555;
+            border-bottom: 4px solid #333;
             display: flex;
             justify-content: center;
-            margin-bottom: 2rem;
-            height: 120px;
-            align-items: flex-end;
+            align-items: flex-start;
+            padding-top: 10px;
+            box-shadow: inset 0 -10px 20px rgba(0, 0, 0, 0.5);
+            position: relative;
+            z-index: 5;
+        }
+
+        .ticket {
+            background: #fff;
+            width: 300px;
+            padding: 1rem;
+            font-family: 'Courier New', monospace;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transform: rotate(-2deg);
+            animation: slideInDown 0.5s ease-out;
             position: relative;
         }
 
-        .customer-avatar {
-            font-size: 4rem;
-            margin-right: 1rem;
-            animation: bounce 2s infinite ease-in-out;
+        .ticket::before {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            background: #888;
+            border-radius: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 2px 2px rgba(0, 0, 0, 0.3);
         }
 
-        .speech-bubble {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 20px 20px 20px 0;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            max-width: 400px;
-            position: relative;
-            font-size: 1.2rem;
+        .order-text {
+            font-size: 1.1rem;
             line-height: 1.4;
+            font-weight: bold;
         }
 
         .math-highlight {
-            color: var(--primary);
-            font-weight: 900;
-            font-size: 1.4rem;
-            background: #fff0f0;
-            padding: 0.2rem 0.5rem;
-            border-radius: 6px;
+            background: #ffeb3b;
+            padding: 2px 5px;
+            border-radius: 4px;
         }
 
-        /* PIZZA BOARD */
-        #pizza-board {
-            position: relative;
-            width: 400px;
-            height: 400px;
-            background: rgba(255,255,255,0.5);
-            border-radius: 50%;
+        /* WORKSTATION - COUNTER */
+        #counter-top {
+            flex: 1;
+            width: 100%;
+            background: #dcdde1;
+            /* Stainless Steel */
+            background-image: linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+            background-size: 50px 100%;
             display: flex;
             justify-content: center;
             align-items: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
-            cursor: crosshair;
-            transition: transform 0.3s ease;
+            position: relative;
+            box-shadow: inset 0 10px 30px rgba(0, 0, 0, 0.1);
+            perspective: 1000px;
         }
-        
+
+        /* OVEN AREA */
+        #oven-area {
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 220px;
+            height: 300px;
+            background: #A04000;
+            border-radius: 80px 80px 0 0;
+            border: 8px solid #6E2C00;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        #oven-mouth {
+            width: 160px;
+            height: 100px;
+            background: #333;
+            border-radius: 60px 60px 0 0;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: inset 0 0 20px #000;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+        }
+
+        /* Fire Animation inside oven */
+        #oven-fire {
+            width: 100%;
+            height: 40px;
+            background: linear-gradient(to top, #ff4500, #ff8c00, transparent);
+            opacity: 0.6;
+            animation: flicker 0.2s infinite alternate;
+        }
+
+        @keyframes flicker {
+            0% {
+                transform: scaleY(1);
+                opacity: 0.6;
+            }
+
+            100% {
+                transform: scaleY(1.2);
+                opacity: 0.8;
+            }
+        }
+
+        #oven-btn {
+            width: 100%;
+            padding: 1rem;
+            background: #e74c3c;
+            color: white;
+            border: none;
+            font-weight: 900;
+            font-size: 1.2rem;
+            cursor: pointer;
+            border-top: 4px solid #c0392b;
+            transition: background 0.2s;
+        }
+
+        #oven-btn:hover {
+            background: #d35400;
+        }
+
+        #oven-btn:disabled {
+            background: #95a5a6;
+            border-color: #7f8c8d;
+            cursor: not-allowed;
+        }
+
+        /* PREP STATION */
+        #prep-station {
+            position: relative;
+            width: 500px;
+            height: 500px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* Wood cutting board */
+            background: #deb887;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2), inset 0 0 40px rgba(139, 69, 19, 0.2);
+            border: 8px solid #8b4513;
+        }
+
+        #pizza-board {
+            width: 400px;
+            height: 400px;
+            position: relative;
+            cursor: crosshair;
+            transition: all 0.5s ease-in-out;
+            z-index: 10;
+        }
+
         #pizza-board:active {
             transform: scale(0.98);
         }
 
         .pizza-base {
-            width: 360px;
-            height: 360px;
+            width: 100%;
+            height: 100%;
             background: var(--pizza-crust);
             border-radius: 50%;
             position: relative;
             overflow: hidden;
-            box-shadow: inset 0 0 20px rgba(0,0,0,0.2);
-            border: 8px solid #d48d48;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.2), 0 5px 15px rgba(0, 0, 0, 0.2);
+            border: 6px solid #d38c45;
+        }
+
+        .pizza-base.cooked {
+            filter: brightness(0.9) sepia(0.2);
+            border-color: #a65e2e;
         }
 
         .sauce-layer {
             position: absolute;
-            top: 20px; left: 20px; right: 20px; bottom: 20px;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            bottom: 20px;
             background: var(--pizza-sauce);
             border-radius: 50%;
-            opacity: 0.9;
+            opacity: 0.95;
+            box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
         }
 
         .cheese-layer {
             position: absolute;
-            top: 30px; left: 30px; right: 30px; bottom: 30px;
+            top: 25px;
+            left: 25px;
+            right: 25px;
+            bottom: 25px;
             background: var(--cheese);
             border-radius: 50%;
-            opacity: 0.8;
-            background-image: radial-gradient(#ffd56b 10%, transparent 11%);
-            background-size: 20px 20px;
+            opacity: 0.9;
+            background-image: radial-gradient(#ffd56b 15%, transparent 16%);
+            background-size: 25px 25px;
+            display: none;
+            /* Showing only sauce initially for better contrast */
         }
 
         .topping {
             position: absolute;
-            width: 32px;
-            height: 32px;
-            font-size: 24px;
+            width: 40px;
+            height: 40px;
+            font-size: 32px;
             display: flex;
             justify-content: center;
             align-items: center;
             transform: translate(-50%, -50%) scale(0);
             pointer-events: none;
+            filter: drop-shadow(2px 2px 2px rgba(0, 0, 0, 0.3));
             animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
 
-        /* INGREDIENT SELECTOR */
-        #controls {
-            margin-top: 2rem;
+        /* INGREDIENT CONTAINERS */
+        #ingredients-rack {
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
             display: flex;
-            gap: 1rem;
-            background: white;
-            padding: 1rem;
-            border-radius: 16px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            flex-direction: column;
+            gap: 1.5rem;
         }
 
-        .ingredient-btn {
-            background: #f0f0f0;
-            border: none;
-            padding: 0.8rem 1.2rem;
-            border-radius: 12px;
-            cursor: pointer;
-            font-family: inherit;
-            font-weight: 700;
-            font-size: 1rem;
+        .ingredient-bin {
+            width: 90px;
+            height: 90px;
+            background: #fff;
+            border-radius: 50%;
+            border: 6px solid #bdc3c7;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2), inset 0 5px 10px rgba(0, 0, 0, 0.1);
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 0.5rem;
-            transition: all 0.2s;
-            border: 2px solid transparent;
-        }
-
-        .ingredient-btn.active {
-            background: #fff0f0;
-            border-color: var(--primary);
-            color: var(--primary);
-            transform: translateY(-2px);
-        }
-
-        .ingredient-btn:hover {
-            background: #e8e8e8;
-        }
-
-        .ingredient-icon {
-            font-size: 1.5rem;
-        }
-
-        #serve-btn {
-            background: var(--success);
-            color: white;
-            border: none;
-            padding: 0.8rem 2rem;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 1.1rem;
+            justify-content: center;
             cursor: pointer;
-            margin-left: 1rem;
-            transition: transform 0.2s;
-            box-shadow: 0 4px 0 #58a962;
+            transition: transform 0.2s, border-color 0.2s;
+            position: relative;
         }
 
-        #serve-btn:active {
-            transform: translateY(4px);
-            box-shadow: none;
+        .ingredient-bin:hover {
+            transform: scale(1.05);
         }
 
-        /* OVERLAYS */
+        .ingredient-bin.active {
+            border-color: var(--success);
+            transform: scale(1.1);
+            box-shadow: 0 5px 20px rgba(107, 203, 119, 0.4);
+        }
+
+        .bin-icon {
+            font-size: 2.5rem;
+        }
+
+        .bin-label {
+            position: absolute;
+            bottom: -25px;
+            background: #333;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        /* FEEDBACK OVERLAY */
         #feedback-overlay {
             position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -268,97 +402,178 @@
             transform: scale(0.8);
             transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             max-width: 400px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
         }
 
         #feedback-overlay.visible .feedback-card {
             transform: scale(1);
         }
 
-        .feedback-emoji { font-size: 4rem; display: block; margin-bottom: 1rem; }
-        .feedback-title { font-size: 2rem; font-weight: 900; margin: 0 0 1rem 0; color: var(--dark); }
-        .feedback-text { color: #666; margin-bottom: 2rem; font-size: 1.1rem; }
-        
+        .feedback-emoji {
+            font-size: 5rem;
+            display: block;
+            margin-bottom: 1rem;
+        }
+
+        .feedback-title {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin: 0 0 0.5rem 0;
+            color: var(--dark);
+        }
+
+        .feedback-text {
+            color: #555;
+            margin-bottom: 2rem;
+            font-size: 1.2rem;
+        }
+
         .btn-next {
             background: var(--primary);
             color: white;
             border: none;
-            padding: 1rem 2rem;
+            padding: 1rem 3rem;
             border-radius: 50px;
-            font-size: 1.2rem;
+            font-size: 1.4rem;
             font-weight: 700;
             cursor: pointer;
-            box-shadow: 0 4px 10px rgba(255, 107, 107, 0.3);
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
             transition: transform 0.2s;
         }
 
-        .btn-next:hover { transform: scale(1.05); }
+        .btn-next:hover {
+            transform: scale(1.05);
+        }
 
         /* ANIMATIONS */
         @keyframes popIn {
-            0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
-            70% { transform: translate(-50%, -50%) scale(1.2); }
-            100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 0;
+            }
+
+            70% {
+                transform: translate(-50%, -50%) scale(1.2);
+            }
+
+            100% {
+                transform: translate(-50%, -50%) scale(1);
+                opacity: 1;
+            }
         }
 
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+        @keyframes slideInDown {
+            from {
+                transform: translateY(-100%) rotate(0deg);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0) rotate(-2deg);
+                opacity: 1;
+            }
         }
 
-        .wiggle { animation: wiggle 0.5s ease-in-out; }
-        @keyframes wiggle {
-            0%, 100% { transform: rotate(0deg); }
-            25% { transform: rotate(-5deg); }
-            75% { transform: rotate(5deg); }
+        /* Pizza moving to oven */
+        .pizza-baking {
+            animation: move-to-oven 1s forwards ease-in-out;
+            z-index: 20 !important;
+        }
+
+        @keyframes move-to-oven {
+            0% {
+                transform: translateX(0) scale(1);
+            }
+
+            100% {
+                transform: translateX(350px) scale(0.6);
+                opacity: 0;
+            }
+        }
+
+        /* Progress Text */
+        .progress-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2rem;
+            font-weight: 900;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+            display: none;
         }
     </style>
 </head>
+
 <body>
 
     <header>
-        <div style="font-weight:900; font-size:1.5rem; color:var(--primary);">🍕 Pizza Pythagoras</div>
+        <div style="font-weight:900; font-size:1.8rem; color:var(--dark); display:flex; align-items:center; gap:10px;">
+            🍕 Pizza Pythagoras
+        </div>
         <div class="stats">
             <div class="stat-item">
-                <span class="stat-icon">📅</span>
+                <span style="font-size:1.5rem">📅</span>
                 <span>Dag <span id="day-display">1</span></span>
             </div>
             <div class="stat-item">
-                <span class="stat-icon">💰</span>
+                <span style="font-size:1.5rem">💰</span>
                 <span>€ <span id="score-display">0</span></span>
             </div>
         </div>
     </header>
 
-    <div id="game-container">
-        <div id="customer-area">
-            <div class="customer-avatar" id="customer-face">👨‍🍳</div>
-            <div class="speech-bubble" id="order-text">
-                Welkom chef! Klik op "Start" om te beginnen.
+    <div id="kitchen-container">
+        <!-- TOP: TICKETS -->
+        <div id="ticket-rail">
+            <div class="ticket">
+                <div class="order-text" id="order-text">
+                    Laden...
+                </div>
             </div>
         </div>
 
-        <div id="pizza-board">
-            <div class="pizza-base" id="pizza-base">
-                <div class="sauce-layer"></div>
-                <div class="cheese-layer"></div>
-                <!-- Toppings go here -->
-            </div>
-        </div>
+        <!-- CENTER: COUNTER -->
+        <div id="counter-top">
 
-        <div id="controls">
-            <button class="ingredient-btn active" onclick="selectTool('salami')">
-                <span class="ingredient-icon">🍕</span>
-                <span>Salami</span>
-            </button>
-            <button class="ingredient-btn" onclick="selectTool('olive')">
-                <span class="ingredient-icon">🫒</span>
-                <span>Olijven</span>
-            </button>
-            <button class="ingredient-btn" onclick="selectTool('mushroom')">
-                <span class="ingredient-icon">🍄</span>
-                <span>Champignons</span>
-            </button>
-            <button id="serve-btn" onclick="servePizza()">Bakken & Serveren!</button>
+            <!-- LEFT: INGREDIENTS -->
+            <div id="ingredients-rack">
+                <div class="ingredient-bin active" onclick="selectTool('salami')" id="bin-salami">
+                    <span class="bin-icon">🍕</span>
+                    <span class="bin-label">Salami</span>
+                </div>
+                <div class="ingredient-bin" onclick="selectTool('olive')" id="bin-olive">
+                    <span class="bin-icon">🫒</span>
+                    <span class="bin-label">Olijf</span>
+                </div>
+                <div class="ingredient-bin" onclick="selectTool('mushroom')" id="bin-mushroom">
+                    <span class="bin-icon">🍄</span>
+                    <span class="bin-label">Paddenst.</span>
+                </div>
+            </div>
+
+            <!-- MIDDLE: PREP STATION -->
+            <div id="prep-station">
+                <div id="pizza-board">
+                    <div class="pizza-base" id="pizza-base">
+                        <div class="sauce-layer"></div>
+                        <!-- Toppings here -->
+                    </div>
+                </div>
+                <div class="progress-indicator" id="baking-timer">3...</div>
+            </div>
+
+            <!-- RIGHT: OVEN -->
+            <div id="oven-area">
+                <div id="oven-mouth">
+                    <div id="oven-fire"></div>
+                </div>
+                <button id="oven-btn" onclick="bakePizza()">
+                    🔥 BAKKEN
+                </button>
+            </div>
+
         </div>
     </div>
 
@@ -384,7 +599,7 @@
                 olive: 0,
                 mushroom: 0
             },
-            isInteractable: false
+            status: 'WAITING' // WAITING, PREPPING, BAKING, SERVED
         };
 
         const INGREDIENTS = {
@@ -393,14 +608,14 @@
             mushroom: { icon: '🍄', name: 'Champignons' }
         };
 
-        const CUSTOMERS = ['👩', '👨', '👵', '👴', '👧', '👦', '🦁', '👽'];
-
         // DOM ELEMENTS
+        const pizzaBoard = document.getElementById('pizza-board');
         const pizzaBase = document.getElementById('pizza-base');
         const orderText = document.getElementById('order-text');
-        const customerFace = document.getElementById('customer-face');
         const feedbackOverlay = document.getElementById('feedback-overlay');
-        
+        const ovenBtn = document.getElementById('oven-btn');
+        const bakingTimer = document.getElementById('baking-timer');
+
         // INIT
         function init() {
             startDay();
@@ -411,38 +626,34 @@
         }
 
         function selectTool(tool) {
+            if (state.status !== 'PREPPING') return;
+
             state.activeTool = tool;
             // Update UI
-            document.querySelectorAll('.ingredient-btn').forEach(btn => btn.classList.remove('active'));
-            // Find button roughly (in real code use IDs, but this is simple enough)
-            const btns = document.querySelectorAll('.ingredient-btn');
-            if(tool === 'salami') btns[0].classList.add('active');
-            if(tool === 'olive') btns[1].classList.add('active');
-            if(tool === 'mushroom') btns[2].classList.add('active');
+            document.querySelectorAll('.ingredient-bin').forEach(bin => bin.classList.remove('active'));
+            document.getElementById('bin-' + tool).classList.add('active');
         }
 
         // MATH GENERATOR
         function generateOrder() {
             const types = Object.keys(INGREDIENTS);
             const type = types[Math.floor(Math.random() * types.length)];
-            
-            // Difficulty based on "Day" - simplified for MVP
-            // Level 1: Addition (A + B)
-            // Level 2: Multiplication (A x B)
+
+            // Difficulty
             let operation = (state.day > 1 && Math.random() > 0.5) ? 'mult' : 'add';
-            
+
             let num1, num2, target, text;
 
             if (operation === 'add') {
                 target = Math.floor(Math.random() * 8) + 3; // 3 to 10
                 num1 = Math.floor(Math.random() * (target - 1)) + 1;
                 num2 = target - num1;
-                text = `Doe mij een pizza met <span class="math-highlight">${num1} + ${num2}</span> plakjes ${INGREDIENTS[type].name}!`;
+                text = `Tafel 4 wil een pizza met <span class="math-highlight">${num1} + ${num2}</span> plakjes <b>${INGREDIENTS[type].name}</b>.`;
             } else {
                 num1 = Math.floor(Math.random() * 3) + 2; // 2 to 4
                 num2 = Math.floor(Math.random() * 3) + 2; // 2 to 4
                 target = num1 * num2;
-                text = `Ik rammel! Mag ik <span class="math-highlight">${num1} x ${num2}</span> stukjes ${INGREDIENTS[type].name}?`;
+                text = `Bestelling: <span class="math-highlight">${num1} x ${num2}</span> stukjes <b>${INGREDIENTS[type].name}</b>!`;
             }
 
             return {
@@ -454,40 +665,55 @@
 
         function nextOrder() {
             // Reset Board
-            pizzaBase.innerHTML = '<div class="sauce-layer"></div><div class="cheese-layer"></div>';
+            pizzaBase.innerHTML = '<div class="sauce-layer"></div>';
+            pizzaBase.classList.remove('cooked');
+            pizzaBoard.classList.remove('pizza-baking');
+            pizzaBoard.style.display = 'block';
+            pizzaBoard.style.transform = 'scale(1)';
+            pizzaBoard.style.opacity = '1';
+
             state.toppingsPlaced = { salami: 0, olive: 0, mushroom: 0 };
-            
+
             // Hide Feedback
             feedbackOverlay.classList.remove('visible');
 
             // Generate New Order
             state.currentOrder = generateOrder();
-            state.isInteractable = true;
+            state.status = 'PREPPING';
 
-            // Visuals
-            customerFace.textContent = CUSTOMERS[Math.floor(Math.random() * CUSTOMERS.length)];
-            customerFace.style.animation = 'none';
-            customerFace.offsetHeight; /* trigger reflow */
-            customerFace.style.animation = 'bounce 2s infinite ease-in-out';
-            
+            // UI Text
             orderText.innerHTML = state.currentOrder.text;
+            ovenBtn.textContent = "🔥 BAKKEN";
+            ovenBtn.disabled = false;
         }
 
         // INTERACTION
         pizzaBase.addEventListener('mousedown', (e) => {
-            if (!state.isInteractable) return;
+            if (state.status !== 'PREPPING') return;
 
             const rect = pizzaBase.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-
-            // Simple boundary check (circle)
+            // Calculate center relative to bounding client rect
             const centerX = rect.width / 2;
             const centerY = rect.height / 2;
-            const dist = Math.sqrt((x-centerX)**2 + (y-centerY)**2);
 
-            if (dist < rect.width / 2 - 20) {
-                addTopping(x, y);
+            const clickX = e.clientX - rect.left;
+            const clickY = e.clientY - rect.top;
+
+            // Distance from center
+            const dist = Math.sqrt((clickX - centerX) ** 2 + (clickY - centerY) ** 2);
+
+            // Allow placing only within sauce area (visually nicer)
+            // Pizza is 400px (parent) -> Base 100% -> Sauce has margin 20px.
+            // Radius approx 200px. Safe zone approx 160px.
+            const SAFE_RADIUS = (rect.width / 2) - 40;
+
+            if (dist < SAFE_RADIUS) {
+                // Use click coordinates if valid, otherwise could clamp, but ignoring clicks outside is better teaching feedback
+                addTopping(clickX, clickY);
+            } else {
+                // Visual feedback for clicking crust? Shake maybe?
+                pizzaBoard.classList.add('wiggle');
+                setTimeout(() => pizzaBoard.classList.remove('wiggle'), 500);
             }
         });
 
@@ -500,26 +726,57 @@
             el.textContent = INGREDIENTS[tool].icon;
             el.style.left = x + 'px';
             el.style.top = y + 'px';
-            // Random rotation for natural look
+            // Random rotation
             el.style.transform = `translate(-50%, -50%) rotate(${Math.random() * 360}deg) scale(0)`;
-            
-            // CSS Animation override handled by keyframes, but let's set final state
+
             setTimeout(() => {
                 el.style.transform = `translate(-50%, -50%) rotate(${Math.random() * 360}deg) scale(1)`;
-            }, 300);
+            }, 50);
 
             pizzaBase.appendChild(el);
-            
-            // Optional: Sound effect could go here
+        }
+
+        function bakePizza() {
+            if (state.status !== 'PREPPING') return;
+            state.status = 'BAKING';
+            ovenBtn.disabled = true;
+            ovenBtn.textContent = "BAKKEN...";
+
+            // Animation
+            pizzaBoard.classList.add('pizza-baking');
+
+            // Timer logic could go here, for now strictly visual delay
+            setTimeout(() => {
+                // Pizza is "in oven" (invisible)
+                // Wait a bit
+
+                setTimeout(() => {
+                    // Done baking
+                    finishBaking();
+                }, 1500);
+
+            }, 800);
+        }
+
+        function finishBaking() {
+            // Bring pizza back but cooked
+            pizzaBoard.classList.remove('pizza-baking');
+            pizzaBase.classList.add('cooked');
+
+            // Reset transforms removed by class removal
+            pizzaBoard.style.transform = 'scale(1)';
+            pizzaBoard.style.opacity = '1';
+
+            // Check results
+            servePizza();
         }
 
         function servePizza() {
-            if (!state.isInteractable) return;
-            state.isInteractable = false;
+            state.status = 'SERVED';
 
             const order = state.currentOrder;
             const placed = state.toppingsPlaced[order.type];
-            const others = Object.keys(state.toppingsPlaced).reduce((sum, key) => 
+            const others = Object.keys(state.toppingsPlaced).reduce((sum, key) =>
                 key !== order.type ? sum + state.toppingsPlaced[key] : sum, 0);
 
             let isCorrect = (placed === order.target) && (others === 0);
@@ -547,9 +804,9 @@
                 emoji.textContent = '😤';
                 title.textContent = 'Dat klopt niet...';
                 title.style.color = 'var(--danger)';
-                
+
                 if (others > 0) {
-                   text.textContent = `Ik wilde alleen ${INGREDIENTS[state.currentOrder.type].name}, geen rommel!`; 
+                    text.textContent = `Ik wilde alleen ${INGREDIENTS[state.currentOrder.type].name}, geen ander spul!`;
                 } else if (placed < target) {
                     text.textContent = `Ik tel er maar ${placed}, maar ik wilde er ${target}!`;
                 } else {
@@ -557,7 +814,10 @@
                 }
             }
 
-            feedbackOverlay.classList.add('visible');
+            // Slight delay so they see the cooked pizza for a second
+            setTimeout(() => {
+                feedbackOverlay.classList.add('visible');
+            }, 500);
         }
 
         // Initial Start
@@ -565,4 +825,5 @@
 
     </script>
 </body>
+
 </html>
