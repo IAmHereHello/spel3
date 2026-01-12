@@ -518,6 +518,56 @@
             transform: scale(1);
         }
 
+        /* MATH CHALLENGE OVERLAY */
+        #math-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            z-index: 150;
+        }
+
+        #math-overlay.visible {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .math-card {
+            background: var(--light);
+            padding: 2rem;
+            border-radius: 20px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            border: 5px solid var(--accent);
+            box-shadow: 0 0 30px rgba(255, 230, 109, 0.5);
+        }
+
+        .math-equation {
+            font-size: 2.5rem;
+            font-weight: 900;
+            margin: 20px 0;
+            color: var(--dark);
+        }
+
+        .math-input {
+            font-size: 2rem;
+            padding: 10px;
+            width: 100px;
+            text-align: center;
+            border: 3px solid #ccc;
+            border-radius: 10px;
+            font-family: 'Outfit', sans-serif;
+        }
+
         /* ANIMATIONS */
         @keyframes flicker {
             0% {
@@ -664,6 +714,19 @@
         </div>
     </div>
 
+    <!-- HEAT BOILER OVERLAY -->
+    <div id="math-overlay">
+        <div class="math-card">
+            <h2>🚀 OVEN BOOST!</h2>
+            <p>Los op om de oven heter te maken!</p>
+            <div class="math-equation" id="math-problem">2x + 4 = 12</div>
+            <input type="number" class="math-input" id="math-answer" placeholder="?">
+            <br><br>
+            <button class="action-btn" onclick="submitMath()">Check!</button>
+            <button class="action-btn" style="background:#e74c3c" onclick="closeMath()">Annuleren</button>
+        </div>
+    </div>
+
     <!-- DAY START -->
     <div id="day-overlay">
         <h1 id="day-title">Dag 1</h1>
@@ -766,6 +829,44 @@
         }
 
         // --- ORDERS ---
+        // --- ORDERS ---
+        // --- ORDERS ---
+        function generateEquation(target) {
+            // Generate algebra based on difficulty
+            // Level 1: x + b = c
+            // Level 2: ax + b = c
+            // Level 3: ax + b = cx + d
+
+            let text = '';
+            let difficulty = GAME.day > 1 ? 2 : 1;
+            if (GAME.day > 3) difficulty = 3;
+
+            // Force randomness
+            const type = Math.floor(Math.random() * difficulty) + 1;
+
+            if (type === 1) {
+                // x + b = c
+                const b = Math.floor(Math.random() * 10) + 1;
+                const c = target + b;
+                text = `x + ${b} = ${c}`;
+            } else if (type === 2) {
+                // ax + b = c
+                const a = Math.floor(Math.random() * 3) + 2; // 2..4
+                const b = Math.floor(Math.random() * 10) + 1;
+                const c = (a * target) + b;
+                text = `${a}x + ${b} = ${c}`;
+            } else {
+                // ax + b = cx + d  (where a > c)
+                const c = Math.floor(Math.random() * 3) + 1; // 1..3
+                const a = c + Math.floor(Math.random() * 2) + 1; // a > c
+                const b = Math.floor(Math.random() * 10) + 1;
+                // (a-c)x = d - b  => d = (a-c)x + b
+                const d = ((a - c) * target) + b;
+                text = `${a}x + ${b} = ${c}x + ${d}`;
+            }
+            return { question: text, answer: target };
+        }
+
         function createAutoOrder() {
             if (GAME.orderQueue.length >= 6) return; // Rail full
 
@@ -777,14 +878,17 @@
             const rTop = unlockedTops[Math.floor(Math.random() * unlockedTops.length)];
 
             // Math Difficulty
-            const isMult = GAME.day > 1 && Math.random() > 0.5;
-            let n1, n2, target, txt;
-            if (isMult) {
-                n1 = Math.floor(Math.random() * 3) + 2; n2 = Math.floor(Math.random() * 3) + 2; target = n1 * n2;
-                txt = `${n1} x ${n2}`;
-            } else {
-                target = Math.floor(Math.random() * 8) + 4; n1 = Math.floor(Math.random() * (target - 1)) + 1; n2 = target - n1;
+            let target = Math.floor(Math.random() * 5) + 3; // 3 to 7 toppings
+            let txt = '';
+
+            if (GAME.day === 1) {
+                const n1 = Math.floor(Math.random() * (target - 1)) + 1;
+                const n2 = target - n1;
                 txt = `${n1} + ${n2}`;
+            } else {
+                // Use Algebra
+                const eq = generateEquation(target);
+                txt = eq.question;
             }
 
             // Fractions
@@ -1005,7 +1109,15 @@
 
         function clickOven(i) {
             const p = GAME.ovenSlots[i];
-            if (!p || p.state !== 'BAKED') return;
+            if (!p) return;
+
+            // Oven Interaction (Balance Method challenge)
+            if (p.state === 'BAKING') {
+                openMathChallenge(i);
+                return;
+            }
+
+            if (p.state !== 'BAKED') return;
 
             if (GAME.cuttingPizza) { alert("Maak de snijplank eerst leeg!"); return; }
 
@@ -1019,6 +1131,43 @@
             renderOvenSlot(i);
             switchStation('cutting');
             updateBadges();
+        }
+
+        // --- MATH CHALLENGE ---
+        function openMathChallenge(i) {
+            GAME.activeOvenSlot = i;
+            const target = Math.floor(Math.random() * 8) + 2;
+            GAME.currentMathAnswer = target;
+            const eq = generateEquation(target);
+
+            document.getElementById('math-problem').textContent = eq.question;
+            const inp = document.getElementById('math-answer');
+            inp.value = '';
+            inp.onkeydown = (e) => { if (e.key === 'Enter') submitMath(); };
+            document.getElementById('math-overlay').classList.add('visible');
+            inp.focus();
+        }
+
+        function closeMath() {
+            document.getElementById('math-overlay').classList.remove('visible');
+            GAME.activeOvenSlot = null;
+        }
+
+        function submitMath() {
+            const val = parseInt(document.getElementById('math-answer').value);
+            if (isNaN(val)) return;
+
+            if (val === GAME.currentMathAnswer) {
+                // Correct!
+                if (GAME.activeOvenSlot !== null && GAME.ovenSlots[GAME.activeOvenSlot]) {
+                    GAME.ovenSlots[GAME.activeOvenSlot].bakeTime += 5; // +5s boost
+                }
+                closeMath();
+            } else {
+                // Wrong
+                document.getElementById('math-answer').style.borderColor = 'red';
+                setTimeout(() => document.getElementById('math-answer').style.borderColor = '#ccc', 500);
+            }
         }
 
         // --- CUTTING ---
@@ -1084,8 +1233,10 @@
             cutOverlay.innerHTML = '';
             // Finals
             GAME.cutLines.forEach(a => {
-                const x1 = 200 + 200 * Math.cos(a); const y1 = 200 + 200 * Math.sin(a);
-                const x2 = 200 - 200 * Math.cos(a); const y2 = 200 - 200 * Math.sin(a);
+                // Center is 200,200 (Container is 400x400)
+                const cx = 200, cy = 200, r = 200;
+                const x1 = cx + r * Math.cos(a); const y1 = cy + r * Math.sin(a);
+                const x2 = cx - r * Math.cos(a); const y2 = cy - r * Math.sin(a);
                 drawLine(x1, y1, x2, y2, 'cut-line-visual');
             });
             // Drag
