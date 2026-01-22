@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Pizza Pythagoras - De Pizzeria</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -31,7 +31,6 @@
             background-color: #333;
             background-image: linear-gradient(45deg, #222 25%, transparent 25%), linear-gradient(-45deg, #222 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #222 75%), linear-gradient(-45deg, transparent 75%, #222 75%);
             background-size: 40px 40px;
-            background-position: 0 0, 0 20px, 20px -20px, -20px 0px;
             color: var(--dark);
             margin: 0;
             display: flex;
@@ -45,25 +44,26 @@
         header {
             width: 100%;
             background: white;
-            padding: 0.5rem 2rem;
+            padding: 0.5rem 1rem;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
             display: flex;
             justify-content: space-between;
             align-items: center;
             z-index: 20;
             height: 60px;
+            flex-shrink: 0;
         }
 
         .stats {
             display: flex;
-            gap: 2rem;
+            gap: 1rem;
             font-weight: 700;
-            font-size: 1.2rem;
+            font-size: 1rem;
         }
 
         .stat-item {
             background: var(--light);
-            padding: 0.2rem 1rem;
+            padding: 0.2rem 0.8rem;
             border-radius: 12px;
             display: flex;
             align-items: center;
@@ -79,18 +79,19 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 1rem;
+            gap: 0.5rem;
             box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.3);
             z-index: 20;
+            flex-shrink: 0;
         }
 
         .nav-btn {
             background: transparent;
             border: 2px solid rgba(255, 255, 255, 0.2);
             color: rgba(255, 255, 255, 0.6);
-            padding: 0.2rem 1.5rem;
+            padding: 0.2rem 1rem;
             border-radius: 12px;
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-weight: 700;
             cursor: pointer;
             display: flex;
@@ -98,6 +99,8 @@
             align-items: center;
             transition: all 0.2s;
             position: relative;
+            flex: 1;
+            max-width: 120px;
         }
 
         .nav-btn.active {
@@ -137,6 +140,18 @@
             position: relative;
             overflow: hidden;
             background: #dcdde1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        /* SCALER WRAPPER FOR RESPONSIVENESS */
+        #game-scaler {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-origin: center center;
+            /* Will be set by JS */
         }
 
         .station {
@@ -151,6 +166,8 @@
             opacity: 0;
             pointer-events: none;
             transition: opacity 0.3s ease;
+            overflow-y: auto; /* Allow scroll on small vertical screens if needed */
+            overflow-x: hidden;
         }
 
         .station.active {
@@ -159,13 +176,11 @@
         }
 
         /* PREP */
-        #station-prep {
-            justify-content: flex-start;
-        }
+        #station-prep { justify-content: flex-start; }
 
         #ticket-rail {
             width: 100%;
-            min-height: 120px;
+            min-height: 110px;
             background: #555;
             display: flex;
             justify-content: flex-start;
@@ -174,103 +189,72 @@
             gap: 10px;
             overflow-x: auto;
             border-bottom: 5px solid #333;
+            flex-shrink: 0;
         }
 
         .ticket {
             background: #fff;
-            width: 200px;
-            padding: 0.8rem;
+            width: 180px;
+            padding: 0.6rem;
             font-family: 'Courier New', monospace;
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             flex-shrink: 0;
             cursor: pointer;
             transition: transform 0.2s;
             position: relative;
         }
+        .ticket.active-prep { border: 3px solid var(--success); transform: scale(1.05); }
+        .ticket.urgent { background: #ffebee; border: 2px solid red; }
 
-        .ticket:hover {
-            transform: translateY(-5px);
-        }
-
-        .ticket.active-prep {
-            border: 3px solid var(--success);
-            transform: scale(1.05);
-        }
-
-        .ticket.urgent {
-            background: #ffebee;
-            border: 2px solid red;
-        }
-
-        #prep-table {
+        #prep-work-area {
             position: relative;
             width: 100%;
-            max-width: 1000px;
-            flex: 1;
+            max-width: 600px;
             display: flex;
-            gap: 1rem;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
             padding: 1rem;
+            transform-origin: top center;
+        }
+
+        #prep-layout {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1rem;
         }
 
         #ingredients-rack {
             display: flex;
-            flex-direction: column;
             gap: 0.5rem;
             flex-wrap: wrap;
-            height: 400px;
             justify-content: center;
+            background: rgba(0,0,0,0.1);
+            padding: 10px;
+            border-radius: 20px;
         }
 
         .ingredient-bin {
-            width: 60px;
-            height: 60px;
+            width: 50px;
+            height: 50px;
             background: white;
             border-radius: 50%;
             border: 3px solid #bdc3c7;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 1.5rem;
+            font-size: 1.2rem;
             cursor: pointer;
             transition: transform 0.2s;
             position: relative;
         }
-
-        .ingredient-bin:hover {
-            transform: scale(1.05);
-        }
-
-        .ingredient-bin.active {
-            border-color: var(--success);
-            transform: scale(1.1);
-            box-shadow: 0 0 15px rgba(46, 204, 113, 0.5);
-        }
-
-        .ingredient-bin.locked {
-            filter: grayscale(1);
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .bin-label {
-            position: absolute;
-            bottom: -15px;
-            font-size: 0.7rem;
-            background: #333;
-            color: white;
-            padding: 1px 4px;
-            border-radius: 4px;
-            pointer-events: none;
-            white-space: nowrap;
-            z-index: 10;
-        }
+        .ingredient-bin.active { border-color: var(--success); transform: scale(1.1); box-shadow: 0 0 15px rgba(46, 204, 113, 0.5); }
+        .ingredient-bin.locked { filter: grayscale(1); opacity: 0.5; cursor: not-allowed; }
 
         #prep-board {
-            width: 450px;
-            height: 450px;
+            width: 360px; /* Fixed logical size */
+            height: 360px;
             background: #deb887;
             border-radius: 12px;
             border: 8px solid #8b4513;
@@ -278,59 +262,47 @@
             justify-content: center;
             align-items: center;
             position: relative;
+            margin: 0 auto;
         }
 
         .pizza-visual {
-            width: 380px;
-            height: 380px;
+            width: 300px;
+            height: 300px;
             background: var(--pizza-crust);
             border-radius: 50%;
             position: relative;
             box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.2);
             border: 6px solid #d38c45;
-            transition: transform 0.2s;
             overflow: hidden;
         }
 
         .pizza-visual .sauce {
-            position: absolute;
-            top: 15px;
-            left: 15px;
-            right: 15px;
-            bottom: 15px;
-            background: #e6e6e6;
-            /* Empty */
-            border-radius: 50%;
-            pointer-events: none;
-            opacity: 1;
+            position: absolute; top: 10px; left: 10px; right: 10px; bottom: 10px;
+            background: #e6e6e6; border-radius: 50%; pointer-events: none;
         }
 
         .topping-item {
-            position: absolute;
-            width: 30px;
-            height: 30px;
-            font-size: 24px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            pointer-events: none;
-            z-index: 5;
+            position: absolute; width: 30px; height: 30px; font-size: 24px;
+            display: flex; justify-content: center; align-items: center;
+            pointer-events: none; z-index: 5;
         }
 
         /* OVEN */
         #station-oven {
             background: #5D4037;
+            display: flex;
             flex-direction: row;
             flex-wrap: wrap;
             justify-content: center;
             align-content: center;
-            gap: 2rem;
-            padding: 2rem;
+            gap: 1rem;
+            padding: 1rem;
+            overflow-y: auto;
         }
 
         .oven-slot {
-            width: 240px;
-            height: 180px;
+            width: 200px;
+            height: 160px;
             background: #3E2723;
             border-radius: 20px 20px 0 0;
             border: 4px solid #8D6E63;
@@ -343,88 +315,26 @@
         }
 
         .oven-fire {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 50px;
-            background: linear-gradient(to top, #ff5722, transparent);
-            opacity: 0.3;
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 50px;
+            background: linear-gradient(to top, #ff5722, transparent); opacity: 0.3;
             animation: flicker 0.2s infinite;
         }
 
-        .oven-timer {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(0, 0, 0, 0.6);
-            color: white;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: monospace;
-        }
-
-        .oven-temp-gauge {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-            width: 8px;
-            height: 40px;
-            background: #333;
-            border: 1px solid #666;
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .oven-temp-fill {
-            width: 100%;
-            height: 0%;
-            background: red;
-            position: absolute;
-            bottom: 0;
-            transition: height 0.5s;
-        }
-
         .oven-pizza {
-            width: 160px;
-            height: 160px;
+            width: 140px; height: 140px;
             transform: scaleX(1) scaleY(0.4);
-            cursor: pointer;
-            transition: transform 0.2s, filter 0.5s;
+            cursor: pointer; transition: transform 0.2s, filter 0.5s;
         }
-
-        .oven-pizza:hover {
-            transform: scaleX(1.05) scaleY(0.42);
-        }
-
-        .oven-pizza.done {
-            filter: brightness(0.7) sepia(0.4);
-            border-color: #8D6E63;
-        }
-
-        .oven-pizza.crispy {
-            filter: brightness(0.6) sepia(0.6) contrast(1.2);
-            border-color: #5D4037;
-        }
+        .oven-pizza.done { filter: brightness(0.7) sepia(0.4); border-color: #8D6E63; }
+        .oven-pizza.crispy { filter: brightness(0.6) sepia(0.6) contrast(1.2); border-color: #5D4037; }
 
         /* CUTTING */
-        #station-cutting {
-            background: #7f8c8d;
-            justify-content: center;
-        }
-
-        #cutting-board-area {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1rem;
-            width: 100%;
-        }
+        #station-cutting { background: #7f8c8d; justify-content: center; }
 
         #cut-canvas-container {
             position: relative;
-            width: 400px;
-            height: 400px;
+            width: 360px;
+            height: 360px;
             cursor: crosshair;
             display: flex;
             justify-content: center;
@@ -432,281 +342,154 @@
         }
 
         #cut-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 20;
-            pointer-events: auto;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 20; pointer-events: auto;
         }
-
-        .cut-line-visual {
-            stroke: white;
-            stroke-width: 3;
-            stroke-dasharray: 5 5;
-            opacity: 0.8;
-            filter: drop-shadow(0 0 2px black);
-        }
-
-        .slice-wedge {
-            fill: rgba(255, 230, 109, 0.4);
-            stroke: none;
-            cursor: pointer;
-            transition: fill 0.2s;
-        }
-
-        .slice-wedge:hover {
-            fill: rgba(255, 230, 109, 0.6);
-        }
-
-        .slice-wedge.selected {
-            fill: rgba(107, 203, 119, 0.6);
-            stroke: white;
-            stroke-width: 2;
-        }
+        
+        .cut-line-visual { stroke: white; stroke-width: 3; stroke-dasharray: 5 5; filter: drop-shadow(0 0 2px black); }
+        .slice-wedge { fill: rgba(255, 230, 109, 0.4); stroke: none; cursor: pointer; transition: fill 0.2s; }
+        .slice-wedge.selected { fill: rgba(107, 203, 119, 0.6); stroke: white; stroke-width: 2; }
 
         /* GENERAL UI */
         .action-btn {
-            background: var(--success);
-            color: white;
-            border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 12px;
-            font-weight: 700;
-            cursor: pointer;
+            background: var(--success); color: white; border: none; padding: 0.8rem 1.5rem;
+            border-radius: 12px; font-weight: 700; cursor: pointer; font-size: 1rem;
+        }
+        .action-btn:disabled { background: #95a5a6; cursor: not-allowed; }
+
+        /* OVERLAYS */
+        .overlay-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--dark); color: white;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            z-index: 1000;
         }
 
-        .action-btn:disabled {
-            background: #95a5a6;
-            cursor: not-allowed;
+        .overlay-card {
+            background: white; color: var(--dark); padding: 2rem;
+            border-radius: 20px; text-align: center; max-width: 90%; width: 400px;
         }
 
-        #feedback-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s;
-            z-index: 100;
+        input[type="text"] {
+            padding: 10px; font-size: 1.2rem; border-radius: 8px; border: 2px solid #ccc;
+            width: 100%; margin: 10px 0; font-family: inherit;
         }
 
-        #feedback-overlay.visible {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .feedback-card {
-            background: white;
-            padding: 2rem;
-            border-radius: 20px;
-            text-align: center;
-            max-width: 500px;
-            width: 90%;
-            transform: scale(0.8);
-            transition: transform 0.3s;
-        }
-
-        #feedback-overlay.visible .feedback-card {
-            transform: scale(1);
-        }
-
-        /* MATH CHALLENGE OVERLAY */
-        #math-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.85);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s;
-            z-index: 150;
-        }
-
-        #math-overlay.visible {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .math-card {
-            background: var(--light);
-            padding: 2rem;
-            border-radius: 20px;
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
-            border: 5px solid var(--accent);
-            box-shadow: 0 0 30px rgba(255, 230, 109, 0.5);
-        }
-
-        .math-equation {
-            font-size: 2.5rem;
-            font-weight: 900;
-            margin: 20px 0;
-            color: var(--dark);
-        }
-
-        .math-input {
-            font-size: 2rem;
-            padding: 10px;
-            width: 100px;
-            text-align: center;
-            border: 3px solid #ccc;
-            border-radius: 10px;
-            font-family: 'Outfit', sans-serif;
-        }
-
-        /* ANIMATIONS */
-        @keyframes flicker {
-            0% {
-                opacity: 0.3;
-            }
-
-            100% {
-                opacity: 0.5;
-            }
-        }
-
-        /* DAY START OVERLAY */
-        #day-overlay {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: var(--dark);
-            color: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 200;
-        }
-
-        #day-overlay h1 {
-            font-size: 4rem;
-            color: var(--accent);
-            margin: 0;
-        }
-
-        .unlock-list {
-            list-style: none;
-            padding: 0;
-            text-align: center;
-        }
-
-        .unlock-item {
-            font-size: 1.5rem;
-            margin: 10px 0;
-            color: var(--success);
-        }
+        @keyframes flicker { 0% { opacity: 0.3; } 100% { opacity: 0.5; } }
     </style>
 </head>
 
 <body>
 
     <header>
-        <div style="font-weight:900; font-size:1.6rem; color:var(--dark);">🍕 Pizza Pythagoras</div>
+        <div style="font-weight:900; font-size:1.2rem; color:var(--dark);">🍕 Pizza Pythagoras</div>
         <div class="stats">
-            <div class="stat-item"><span>📅 Dag <span id="day-display">1</span></span></div>
-            <div class="stat-item"><span>💰 € <span id="score-display">0</span></span></div>
+            <div class="stat-item">📅 <span id="day-display">1</span></div>
+            <div class="stat-item">💰 €<span id="score-display">0</span></div>
         </div>
     </header>
 
     <div id="main-view">
-
-        <!-- STATION 1: PREP -->
-        <div id="station-prep" class="station active">
-            <div id="ticket-rail"><!-- Dynamic Tickets --></div>
-
-            <div id="prep-table">
-                <div id="ingredients-rack">
-                    <!-- Dynamic Ingredients -->
-                </div>
-
-                <div id="prep-board">
-                    <div class="pizza-visual" id="prep-pizza" onmousedown="handlePrepClick(event)">
-                        <div class="sauce" id="prep-sauce"></div>
-                        <div id="prep-toppings-container"></div>
-                    </div>
-                </div>
-
-                <div style="display:flex; flex-direction:column; gap:1rem;">
-                    <div id="current-order-info"
-                        style="background:white; padding:1rem; border-radius:10px; width:200px; height:150px; overflow-y:auto; font-size:0.9rem;">
+        <div id="game-scaler">
+            
+            <!-- STATION 1: PREP -->
+            <div id="station-prep" class="station active">
+                <div id="ticket-rail"><!-- Dynamic Tickets --></div>
+                <div id="prep-work-area">
+                    <div id="current-order-info" style="background:white; padding:0.5rem; border-radius:10px; width:100%; margin-bottom:10px; font-size:0.9rem; min-height:80px;">
                         Selecteer een bon om te beginnen...
                     </div>
-                    <button class="action-btn" id="btn-to-oven" onclick="movePrepToOven()" disabled>Naar de Oven
-                        ➡</button>
-                    <button class="action-btn" style="background:#e74c3c" onclick="trashPrep()">🗑 Prullenbak</button>
-                </div>
-            </div>
-        </div>
-
-        <!-- STATION 2: OVEN -->
-        <div id="station-oven" class="station">
-            <div class="oven-slot" id="slot-0"></div>
-            <div class="oven-slot" id="slot-1"></div>
-            <div class="oven-slot" id="slot-2"></div>
-            <div class="oven-slot" id="slot-3"></div>
-        </div>
-
-        <!-- STATION 3: CUTTING -->
-        <div id="station-cutting" class="station">
-            <div id="cutting-board-area" style="display:none;">
-                <h2 style="color:white; margin:0;" id="cutting-header">Snijden</h2>
-                <div id="cut-instructions" style="color:#ddd; margin-bottom:10px;">Sleep een lijn over de pizza.</div>
-
-                <div class="ticket" id="cut-ticket-display" style="width:300px; margin-bottom:1rem; cursor:default;">
-                </div>
-
-                <div id="cut-canvas-container">
-                    <div class="pizza-visual" id="cut-pizza-visual">
-                        <div class="sauce" id="cut-sauce"></div>
-                        <div id="cut-toppings-container"></div>
+                    
+                    <div id="prep-board">
+                        <div class="pizza-visual" id="prep-pizza" onmousedown="handlePrepClick(event)" ontouchstart="handlePrepClick(event)">
+                            <div class="sauce" id="prep-sauce"></div>
+                            <div id="prep-toppings-container"></div>
+                        </div>
                     </div>
-                    <svg id="cut-overlay"></svg>
-                </div>
 
-                <div style="display:flex; gap:10px; margin-top:10px;">
-                    <button id="btn-confirm-cut" onclick="finishCuttingMode()" class="action-btn"
-                        style="background:var(--dark);">Klaar met Snijden</button>
-                    <button onclick="resetCuts()" class="action-btn" style="background:#e74c3c;">Reset</button>
-                    <button id="final-serve-btn" onclick="serveFinal()" class="action-btn"
-                        style="display:none; background:var(--accent); color:black;">🔔 Serveren!</button>
+                    <div id="ingredients-rack" style="margin-top:20px; width:100%;">
+                        <!-- Dynamic Ingredients -->
+                    </div>
+
+                    <div style="display:flex; gap:10px; margin-top:20px;">
+                         <button class="action-btn" style="background:#e74c3c" onclick="trashPrep()">🗑</button>
+                         <button class="action-btn" id="btn-to-oven" onclick="movePrepToOven()" disabled>Naar Oven ➡</button>
+                    </div>
                 </div>
             </div>
-            <div id="cutting-empty-msg" style="color:white; font-size:1.5rem; opacity:0.6;">Selecteer een pizza uit de
-                Oven.</div>
-        </div>
 
+            <!-- STATION 2: OVEN -->
+            <div id="station-oven" class="station">
+                <div class="oven-slot" id="slot-0"></div>
+                <div class="oven-slot" id="slot-1"></div>
+                <div class="oven-slot" id="slot-2"></div>
+                <div class="oven-slot" id="slot-3"></div>
+            </div>
+
+            <!-- STATION 3: CUTTING -->
+            <div id="station-cutting" class="station">
+                <div id="cutting-board-area" style="display:none; flex-direction:column; align-items:center; gap:1rem;">
+                    <h2 style="color:white; margin:0;" id="cutting-header">Snijden</h2>
+                    <div class="ticket" id="cut-ticket-display" style="width:100%; max-width:300px; cursor:default;"></div>
+
+                    <div id="cut-canvas-container">
+                        <div class="pizza-visual" id="cut-pizza-visual">
+                            <div class="sauce" id="cut-sauce"></div>
+                            <div id="cut-toppings-container"></div>
+                        </div>
+                        <svg id="cut-overlay"></svg>
+                    </div>
+
+                    <div id="cut-controls" style="display:flex; gap:10px;">
+                        <button id="btn-confirm-cut" onclick="finishCuttingMode()" class="action-btn" style="background:var(--dark);">Klaar met Snijden</button>
+                        <button onclick="resetCuts()" class="action-btn" style="background:#e74c3c;">Reset</button>
+                        <button id="final-serve-btn" onclick="serveFinal()" class="action-btn" style="display:none; background:var(--accent); color:black;">🔔 Serveren!</button>
+                    </div>
+                    <div id="cut-instructions" style="color:#ddd;"></div>
+                </div>
+                <div id="cutting-empty-msg" style="color:white; font-size:1.5rem; opacity:0.6; margin-top:50px;">Selecteer een pizza uit de Oven.</div>
+            </div>
+
+        </div>
     </div>
 
     <div id="nav-tabs">
-        <button class="nav-btn active" onclick="switchStation('prep')"><span class="nav-icon">🥣</span>Preppen</button>
-        <button class="nav-btn" onclick="switchStation('oven')"><span class="nav-icon">🔥</span>Oven<div class="badge"
-                id="badge-oven">0</div></button>
-        <button class="nav-btn" onclick="switchStation('cutting')"><span class="nav-icon">🔪</span>Snijden</button>
+        <button class="nav-btn active" onclick="switchStation('prep')">🥣 Preppen</button>
+        <button class="nav-btn" onclick="switchStation('oven')">🔥 Oven <div class="badge" id="badge-oven">0</div></button>
+        <button class="nav-btn" onclick="switchStation('cutting')">🔪 Snijden</button>
     </div>
 
-    <!-- FEEDBACK -->
-    <div id="feedback-overlay">
-        <div class="feedback-card">
+    <!-- GATEKEEPER START SCREEN -->
+    <div id="gatekeeper-overlay" class="overlay-screen">
+        <div class="overlay-card">
+            <h1>🍕 Pizza Pythagoras</h1>
+            <p>Welkom bij de Pizzeria!</p>
+            <input type="text" id="inp-code" placeholder="Start Code (bijv. PIZZA...)" />
+            <br>
+            <input type="text" id="inp-name" placeholder="Jouw Pseudoniem / Naam" />
+            <br><br>
+            <button class="action-btn" onclick="checkGatekeeper()">Start Game</button>
+            <p id="gate-error" style="color:red; display:none;">Verkeerde code!</p>
+        </div>
+    </div>
+
+    <!-- WIN SCREEN -->
+    <div id="win-overlay" class="overlay-screen" style="display:none;">
+        <div class="overlay-card">
+            <h1 style="color:var(--success)">Gefeliciteerd!</h1>
+            <p>De cursus Pizza Pythagoras is afgerond.</p>
+            <h2>Totale Winst: €<span id="final-score">0</span></h2>
+            <div id="log-status" style="color:#666; margin-top:20px;">Resultaten opslaan...</div>
+        </div>
+    </div>
+
+    <!-- FEEDBACK OVERLAY -->
+    <div id="feedback-overlay" class="overlay-screen" style="display:none; background:rgba(0,0,0,0.85);">
+        <div class="overlay-card" style="transform:scale(1);">
             <h2 id="res-title">Resultaat</h2>
             <div style="width:100%; height:10px; background:#eee; margin:10px 0; border-radius:5px;">
-                <div id="res-heat" style="height:100%; width:80%; background:red;"></div>
+                <div id="res-heat" style="height:100%; width:0%; background:red;"></div>
             </div>
             <p id="res-desc" style="text-align:left; font-size:0.95rem;"></p>
             <h1 id="res-score" style="font-size:3rem; color:var(--primary);">+€0</h1>
@@ -714,65 +497,103 @@
         </div>
     </div>
 
-    <!-- HEAT BOILER OVERLAY -->
-    <div id="math-overlay">
-        <div class="math-card">
+    <!-- MATH OVERLAY -->
+    <div id="math-overlay" class="overlay-screen" style="display:none; background:rgba(0,0,0,0.85); z-index:1100;">
+        <div class="overlay-card" style="border: 5px solid var(--accent);">
             <h2>🚀 OVEN BOOST!</h2>
-            <p>Los op om de oven heter te maken!</p>
-            <div class="math-equation" id="math-problem">2x + 4 = 12</div>
-            <input type="number" class="math-input" id="math-answer" placeholder="?">
+            <div style="font-size:2.5rem; font-weight:900; margin:20px;" id="math-problem">2x=10</div>
+            <input type="number" id="math-answer" style="width:100px; text-align:center; font-size:2rem;" placeholder="?">
             <br><br>
             <button class="action-btn" onclick="submitMath()">Check!</button>
             <button class="action-btn" style="background:#e74c3c" onclick="closeMath()">Annuleren</button>
         </div>
     </div>
 
-    <!-- DAY START -->
-    <div id="day-overlay">
-        <h1 id="day-title">Dag 1</h1>
+    <!-- DAY START OVERLAY -->
+    <div id="day-overlay" class="overlay-screen" style="display:none; z-index: 1050;">
+        <h1 id="day-title" style="font-size:3rem; color:var(--accent);">Dag 1</h1>
         <p>Dit heb je ontgrendeld:</p>
-        <ul class="unlock-list" id="unlock-list"></ul>
-        <button class="action-btn" onclick="startDayLoop()" style="font-size:1.5rem; margin-top:20px;">Start Dag
-            ➡</button>
+        <ul id="unlock-list" style="list-style:none; padding:0; font-size:1.5rem; color:var(--success);"></ul>
+        <button class="action-btn" onclick="startDayLoop()" style="font-size:1.5rem; margin-top:20px;">Start Dag ➡</button>
     </div>
 
-
     <script>
+        // CONFIG
+        const START_CODE = "PIZZA314";
+        const LOG_URL = "https://script.google.com/macros/s/AKfycbytukuFv4uakCSohLYXZa-44gzMv_0jWAAQoBfLXHaMTN_TsRYK0lcVaeKhkXtbdek7XA/exec";
+        const MAX_DAYS = 5;
+
         // DATA
         const ITEMS = {
-            // Sauces
             sauce_tomato: { type: 'sauce', name: 'Tomatensaus', color: '#D63031', icon: '🍅', day: 1 },
             sauce_pesto: { type: 'sauce', name: 'Pesto', color: '#2ecc71', icon: '🌿', day: 2 },
             sauce_bbq: { type: 'sauce', name: 'BBQ Saus', color: '#5D4037', icon: '🍖', day: 3 },
-            sauce_bianca: { type: 'sauce', name: 'Witte Saus', color: '#f5f6fa', icon: '🥛', day: 4 },
-            // Toppings
             t_salami: { type: 'top', name: 'Salami', icon: '🍕', day: 1 },
             t_olive: { type: 'top', name: 'Olijven', icon: '🫒', day: 2 },
             t_shroom: { type: 'top', name: 'Champignons', icon: '🍄', day: 3 },
             t_pepper: { type: 'top', name: 'Paprika', icon: '🫑', day: 4 },
-            t_corn: { type: 'top', name: 'Mais', icon: '🌽', day: 5 },
-            t_onion: { type: 'top', name: 'Ui', icon: '🧅', day: 6 }
+            t_corn: { type: 'top', name: 'Mais', icon: '🌽', day: 5 }
         };
 
         const GAME = {
-            day: 1, money: 0, activeStation: 'prep',
+            day: 1, money: 0, 
+            playerName: '',
             orderQueue: [], autoOrderInterval: null,
-
             // Prep
             activeOrder: null, prepToppings: [], prepSauce: null, activeTool: null,
             // Oven
-            ovenSlots: [null, null, null, null],
+            ovenSlots: [null, null, null, null], activeOvenSlot: null, currentMathAnswer: 0,
             // Cutting
             cuttingPizza: null, cutLines: [], selectedSlices: [], isSelecting: false,
             cutState: { dragging: false, start: null, curr: null }
         };
 
+        // --- RESPONSIVE SCALER ---
+        function resizeGame() {
+            const wrap = document.getElementById('game-scaler');
+            if(!wrap) return;
+            // Base logical width is approx 400-500px. Let's aim to fit active area.
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+            // If mobile, scale down.
+            let scale = 1;
+            if (w < 500) {
+                scale = w / 420; // 420px allows some margin
+            }
+            wrap.style.transform = `scale(${scale})`;
+            // Adjust height if needed? Scale handles visual, but layout might drift.
+            // Center active station
+        }
+        window.addEventListener('resize', resizeGame);
+        setInterval(resizeGame, 1000); // Polling just in case
+
+        // --- GATEKEEPER ---
+        function checkGatekeeper() {
+           const code = document.getElementById('inp-code').value.trim();
+           const name = document.getElementById('inp-name').value.trim();
+           if (code === START_CODE && name.length > 0) {
+               GAME.playerName = name;
+               document.getElementById('gatekeeper-overlay').style.display = 'none';
+               // Start sounds/game
+               initGame();
+           } else {
+               document.getElementById('gate-error').style.display = 'block';
+           }
+        }
+
         // --- INIT & DAY LOOP ---
-        function init() {
+        function initGame() {
+            resizeGame();
             showDayStart();
         }
 
         function showDayStart() {
+            // Check Win Condition
+            if(GAME.day > MAX_DAYS) {
+                gameWin();
+                return;
+            }
+
             document.getElementById('day-overlay').style.display = 'flex';
             document.getElementById('day-title').textContent = `Dag ${GAME.day}`;
             const list = document.getElementById('unlock-list');
@@ -780,15 +601,12 @@
 
             // Show Unlocks
             const newItems = Object.values(ITEMS).filter(i => i.day === GAME.day);
-            if (newItems.length === 0 && GAME.day > 1) {
-                list.innerHTML = '<li class="unlock-item">Nog meer bestellingen!</li>';
+            if (newItems.length > 0) {
+                newItems.forEach(i => list.innerHTML += `<li>+ ${i.name} ${i.icon}</li>`);
             } else {
-                newItems.forEach(i => {
-                    list.innerHTML += `<li class="unlock-item">+ ${i.name} ${i.icon}</li>`;
-                });
+                list.innerHTML = '<li>Nog meer bestellingen!</li>';
             }
-            if (GAME.day === 1) list.innerHTML += '<li class="unlock-item">Basis Training</li>';
-
+            
             renderIngredientsBin();
         }
 
@@ -796,122 +614,84 @@
             document.getElementById('day-overlay').style.display = 'none';
             GAME.orderQueue = [];
             renderTickets();
-
-            // Start Auto Orders
-            // Speed increases with Day: 20s -> 15s -> 10s -> 5s min
-            let speed = Math.max(5000, 20000 - (GAME.day * 2000));
-            if (GAME.day === 1) speed = 9999999; // Day 1 manual only (scripted start)
+            
+            // Speed increases with Day
+            let speed = Math.max(5000, 20000 - (GAME.day * 2500));
+            if (GAME.day === 1) speed = 8000; 
 
             if (GAME.autoOrderInterval) clearInterval(GAME.autoOrderInterval);
             GAME.autoOrderInterval = setInterval(createAutoOrder, speed);
-
-            // Instant first order
-            createAutoOrder();
+            createAutoOrder(); // First one instant
         }
 
+        // --- LOGGING ---
+        async function gameWin() {
+            document.getElementById('win-overlay').style.display = 'flex';
+            document.getElementById('final-score').textContent = GAME.money;
+            
+            // Log Data
+            const params = new URLSearchParams({
+                action: 'submit',
+                code: GAME.playerName,
+                quizId: 'Game3_Pizza',
+                score: GAME.money,
+                total: 100
+            });
+
+            try {
+                await fetch(LOG_URL + '?' + params.toString(), { mode: 'no-cors' });
+                document.getElementById('log-status').textContent = "Scores opgeslagen. Goed gedaan!";
+                document.getElementById('log-status').style.color = "green";
+            } catch (e) {
+                document.getElementById('log-status').textContent = "Kon niet opslaan (offline?). Maak een screenshot.";
+            }
+        }
+
+        // --- CORE GAME LOGIC (Minified/Condensed for single file) ---
         function renderIngredientsBin() {
             const rack = document.getElementById('ingredients-rack');
             rack.innerHTML = '';
-
             Object.keys(ITEMS).forEach(k => {
                 const item = ITEMS[k];
                 const locked = item.day > GAME.day;
-                const cls = locked ? 'ingredient-bin locked' : 'ingredient-bin';
-                const click = locked ? '' : `onclick="setTool('${k}')"`;
-
-                rack.innerHTML += `
-                    <div class="${cls}" id="bin-${k}" ${click}>
-                        <span style="pointer-events:none">${item.icon}</span>
-                        <div class="bin-label">${item.name}</div>
-                    </div>
-                `;
+                if(locked) return; // Don't show locked
+                const click = `onclick="setTool('${k}')"`;
+                rack.innerHTML += `<div class="ingredient-bin" id="bin-${k}" ${click}>${item.icon}</div>`;
             });
         }
 
-        // --- ORDERS ---
-        // --- ORDERS ---
-        // --- ORDERS ---
-        function generateEquation(target) {
-            // Generate algebra based on difficulty
-            // Level 1: x + b = c
-            // Level 2: ax + b = c
-            // Level 3: ax + b = cx + d
-
-            let text = '';
-            let difficulty = GAME.day > 1 ? 2 : 1;
-            if (GAME.day > 3) difficulty = 3;
-
-            // Force randomness
-            const type = Math.floor(Math.random() * difficulty) + 1;
-
-            if (type === 1) {
-                // x + b = c
-                const b = Math.floor(Math.random() * 10) + 1;
-                const c = target + b;
-                text = `x + ${b} = ${c}`;
-            } else if (type === 2) {
-                // ax + b = c
-                const a = Math.floor(Math.random() * 3) + 2; // 2..4
-                const b = Math.floor(Math.random() * 10) + 1;
-                const c = (a * target) + b;
-                text = `${a}x + ${b} = ${c}`;
-            } else {
-                // ax + b = cx + d  (where a > c)
-                const c = Math.floor(Math.random() * 3) + 1; // 1..3
-                const a = c + Math.floor(Math.random() * 2) + 1; // a > c
-                const b = Math.floor(Math.random() * 10) + 1;
-                // (a-c)x = d - b  => d = (a-c)x + b
-                const d = ((a - c) * target) + b;
-                text = `${a}x + ${b} = ${c}x + ${d}`;
-            }
-            return { question: text, answer: target };
-        }
-
         function createAutoOrder() {
-            if (GAME.orderQueue.length >= 6) return; // Rail full
+            if (GAME.orderQueue.length >= 5) return; 
+            const unlocked = Object.keys(ITEMS).filter(k => ITEMS[k].day <= GAME.day);
+            const rSauce = unlocked.filter(k=>ITEMS[k].type==='sauce')[0] || 'sauce_tomato';
+            const rTop = unlocked.filter(k=>ITEMS[k].type==='top')[Math.floor(Math.random()*(unlocked.filter(k=>ITEMS[k].type==='top').length))];
 
-            // Generate Logic based on unlocked items
-            const unlockedSauces = Object.keys(ITEMS).filter(k => ITEMS[k].type === 'sauce' && ITEMS[k].day <= GAME.day);
-            const unlockedTops = Object.keys(ITEMS).filter(k => ITEMS[k].type === 'top' && ITEMS[k].day <= GAME.day);
-
-            const rSauce = unlockedSauces[Math.floor(Math.random() * unlockedSauces.length)];
-            const rTop = unlockedTops[Math.floor(Math.random() * unlockedTops.length)];
-
-            // Math Difficulty
-            let target = Math.floor(Math.random() * 5) + 3; // 3 to 7 toppings
+            // Math
+            let target = Math.floor(Math.random() * 4) + 2; 
             let txt = '';
-
             if (GAME.day === 1) {
                 const n1 = Math.floor(Math.random() * (target - 1)) + 1;
-                const n2 = target - n1;
-                txt = `${n1} + ${n2}`;
+                txt = `${n1} + ${target-n1}`;
             } else {
-                // Use Algebra
-                const eq = generateEquation(target);
-                txt = eq.question;
+                // Algebra
+                const a = Math.floor(Math.random()*3)+2;
+                const b = Math.floor(Math.random()*5)+1;
+                txt = `${a}x + ${b} = ${(a*target)+b}`;
             }
 
-            // Fractions
-            const denoms = GAME.day > 2 ? [2, 4, 8, 3, 6] : [2, 4, 8];
-            const denom = denoms[Math.floor(Math.random() * denoms.length)];
-            const num = Math.floor(Math.random() * (denom - 1)) + 1;
-
-            // Special
-            const special = (GAME.day > 3 && Math.random() > 0.7) ? 'extra_crispy' : null;
+            // Frac
+            const denoms = [2, 4, 8];
+            const denom = denoms[Math.floor(Math.random()*denoms.length)];
+            const num = Math.floor(Math.random()*(denom-1))+1;
 
             const order = {
                 id: Date.now() + Math.random(),
-                table: Math.floor(Math.random() * 10) + 1,
-                text_math: txt,
-                text_frac: `${num}/${denom}`,
-                reqSauce: rSauce,
-                reqTop: rTop,
+                table: Math.floor(Math.random()*10)+1,
+                reqSauce: rSauce, reqTop: rTop,
                 targetCount: target,
-                reqNum: num,
-                reqDenom: denom,
-                special: special
+                txt: txt,
+                reqNum: num, reqDenom: denom
             };
-
             GAME.orderQueue.push(order);
             renderTickets();
         }
@@ -921,70 +701,48 @@
             rail.innerHTML = '';
             GAME.orderQueue.forEach(o => {
                 const active = GAME.activeOrder && GAME.activeOrder.id === o.id;
-                const cls = active ? 'ticket active-prep' : 'ticket';
-                const crisp = o.special ? '<br><b style="color:red">⚠️ EXTRA KROKANT!</b>' : '';
-
                 rail.innerHTML += `
-                    <div class="${cls}" onclick="activateTicket(${o.id})">
+                    <div class="ticket ${active?'active-prep':''}" onclick="activateTicket(${o.id})">
                         <b>Tafel ${o.table}</b><br>
                         ${ITEMS[o.reqSauce].name}<br>
-                        ${o.text_math} ${ITEMS[o.reqTop].name}<br>
-                        Snij: ${o.text_frac}
-                        ${crisp}
-                    </div>
-                `;
+                        ${o.txt} ${ITEMS[o.reqTop].name}<br>
+                        Snij: ${o.reqNum}/${o.reqDenom}
+                    </div>`;
             });
         }
 
         function activateTicket(id) {
-            if (GAME.activeOrder) return; // Must clear board first
-            const order = GAME.orderQueue.find(o => o.id === id);
-            if (!order) return;
-
-            GAME.activeOrder = order;
-            GAME.prepToppings = [];
-            GAME.prepSauce = null;
-            updatePrepInfo();
-            renderTickets();
+            if (GAME.activeOrder) return; 
+            GAME.activeOrder = GAME.orderQueue.find(o => o.id === id);
+            GAME.prepToppings = []; GAME.prepSauce = null;
+            updatePrepInfo(); renderTickets();
             document.getElementById('btn-to-oven').disabled = false;
         }
 
         function updatePrepInfo() {
             const info = document.getElementById('current-order-info');
-            const p = document.getElementById('prep-pizza');
             const s = document.getElementById('prep-sauce');
             const c = document.getElementById('prep-toppings-container');
-
+            
             if (!GAME.activeOrder) {
-                info.innerHTML = "Kies een bon...";
-                s.style.backgroundColor = '#e6e6e6';
-                c.innerHTML = '';
+                info.textContent = "Selecteer een bon...";
+                s.style.backgroundColor = '#e6e6e6'; c.innerHTML = '';
                 return;
             }
-
             const o = GAME.activeOrder;
-            info.innerHTML = `
-                <b>Huidige Bestelling:</b><br><br>
-                1. Saus: ${ITEMS[o.reqSauce].name}<br>
-                2. Toppings: ${o.text_math} (= <b>${o.targetCount}</b>) ${ITEMS[o.reqTop].name}<br>
-                3. Special: ${o.special ? 'EXTRA KROKANT' : '-'}<br>
-            `;
-
-            // Render Sauce
+            info.innerHTML = `<b>Bestelling:</b> ${ITEMS[o.reqSauce].name}, ${o.txt} (=?) ${ITEMS[o.reqTop].name}`;
+            
             s.style.backgroundColor = GAME.prepSauce ? ITEMS[GAME.prepSauce].color : '#e6e6e6';
-
-            // Render Tops
             c.innerHTML = '';
             GAME.prepToppings.forEach(t => {
                 const el = document.createElement('div'); el.className = 'topping-item';
                 el.textContent = ITEMS[t.type].icon;
                 el.style.left = t.x + 'px'; el.style.top = t.y + 'px';
-                el.style.transform = `translate(-50%,-50%) rotate(${Math.random() * 360}deg)`;
+                el.style.transform = 'translate(-50%,-50%)';
                 c.appendChild(el);
             });
         }
 
-        // --- PREP ACTIONS ---
         function setTool(t) {
             GAME.activeTool = t;
             document.querySelectorAll('.ingredient-bin').forEach(b => b.classList.remove('active'));
@@ -994,55 +752,50 @@
 
         function handlePrepClick(e) {
             if (!GAME.activeOrder || !GAME.activeTool) return;
-
-            const item = ITEMS[GAME.activeTool];
-
-            // Sauce Logic
-            if (item.type === 'sauce') {
-                GAME.prepSauce = GAME.activeTool;
-                updatePrepInfo();
-                return;
+            // Handle Touch
+            let clientX = e.clientX; let clientY = e.clientY;
+            if(e.touches && e.touches.length > 0) {
+                clientX = e.touches[0].clientX; clientY = e.touches[0].clientY;
             }
 
-            // Topping Logic
+            const item = ITEMS[GAME.activeTool];
+            if (item.type === 'sauce') {
+                GAME.prepSauce = GAME.activeTool; updatePrepInfo(); return;
+            }
+            // Topping
             const rect = document.getElementById('prep-pizza').getBoundingClientRect();
-            const x = e.clientX - rect.left; const y = e.clientY - rect.top;
-            const dist = Math.sqrt((x - 190) ** 2 + (y - 190) ** 2);
-            if (dist > 175) return;
+            // Need to account for scale!
+            // But getting offset inside element is safer.
+            // Actually, since the container is scaled, the click coordinates need to be mapped back to 300x300.
+            // Simplest: use offsetX/Y relative to target if possible, but touch doesn't have it.
+            // Calc logic:
+            const scale = document.getElementById('game-scaler').getBoundingClientRect().width / document.getElementById('game-scaler').offsetWidth; // Approx
+            
+            // Logic: The board is 360x360. Pizza is 300x300 centered.
+            // Let's rely on visual placement. The `t.x` is relative to pizza visual (0..300).
+            const x = (clientX - rect.left) / (rect.width / 300);
+            const y = (clientY - rect.top) / (rect.height / 300);
+
+            if (Math.sqrt((x-150)**2 + (y-150)**2) > 140) return; // Outside crust
 
             GAME.prepToppings.push({ type: GAME.activeTool, x, y });
             updatePrepInfo();
         }
 
         function trashPrep() {
-            if (!GAME.activeOrder) return;
-            // Only clear ingredients, keep order active? No, let's reset ingredients only.
-            GAME.prepToppings = [];
-            GAME.prepSauce = null;
-            updatePrepInfo();
+            GAME.prepToppings = []; GAME.prepSauce = null; updatePrepInfo();
         }
 
         function movePrepToOven() {
-            if (!GAME.activeOrder) return;
             const idx = GAME.ovenSlots.findIndex(s => s === null);
             if (idx === -1) { alert("Oven vol!"); return; }
-
             GAME.ovenSlots[idx] = {
                 order: GAME.activeOrder,
-                toppings: [...GAME.prepToppings],
-                sauce: GAME.prepSauce,
-                state: 'BAKING',
-                bakeTime: 0,
-                heat: 0
+                toppings: [...GAME.prepToppings], sauce: GAME.prepSauce,
+                state: 'BAKING', bakeTime: 0, heat: 0
             };
-
-            // Remove from queue
             GAME.orderQueue = GAME.orderQueue.filter(o => o.id !== GAME.activeOrder.id);
-            GAME.activeOrder = null;
-            GAME.prepToppings = []; GAME.prepSauce = null;
-
-            updatePrepInfo();
-            renderTickets();
+            GAME.activeOrder = null; trashPrep(); renderTickets();
             document.getElementById('btn-to-oven').disabled = true;
         }
 
@@ -1052,21 +805,7 @@
                 if (!p) return;
                 if (p.state === 'BAKING') {
                     p.bakeTime += 0.1;
-                    const BAKE_NORM = 15;
-                    // If special request, it needs more time
-                    const BAKE_REQ = p.order.special === 'extra_crispy' ? 22 : 15;
-
-                    if (p.bakeTime >= BAKE_REQ && p.state !== 'BAKED') {
-                        // It becomes "Ready" visually, but if standard pizza waits too long it burns?
-                        // For now keep simple: It's Done.
-                        p.state = 'BAKED';
-                        p.heat = 100;
-                        updateBadges();
-                    }
-                    renderOvenSlot(i);
-                } else if (p.state === 'BAKED') {
-                    p.heat -= 0.15; // Slow decay
-                    if (p.heat < 0) p.heat = 0;
+                    if (p.bakeTime >= 15) { p.state = 'BAKED'; p.heat = 100; updateBadges(); }
                     renderOvenSlot(i);
                 }
             });
@@ -1076,348 +815,213 @@
             const el = document.getElementById('slot-' + i);
             const p = GAME.ovenSlots[i];
             if (!p) { el.innerHTML = ''; return; }
-
-            let html = '<div class="oven-fire"></div>';
-
-            // Pizza Visual
             const sColor = p.sauce ? ITEMS[p.sauce].color : '#e6e6e6';
-            let tops = '';
+            
+            let html = `<div class="pizza-visual oven-pizza ${p.state==='BAKED'?'done':''}" onclick="clickOven(${i})">
+                        <div class="sauce" style="background:${sColor}"></div>`;
             p.toppings.forEach(t => {
-                tops += `<div style="position:absolute; left:${t.x * 0.4}px; top:${t.y * 0.4}px; font-size:10px; transform:translate(-50%,-50%)">${ITEMS[t.type].icon}</div>`;
+                html += `<div style="position:absolute; left:${t.x/300*100}%; top:${t.y/300*100}%; font-size:10px; transform:translate(-50%,-50%)">${ITEMS[t.type].icon}</div>`;
             });
-
-            const isCrispy = p.bakeTime > 20;
-            const css = p.state === 'BAKED' ? (isCrispy ? 'oven-pizza crispy' : 'oven-pizza done') : 'oven-pizza';
-
-            html += `
-                <div class="pizza-visual ${css}" onclick="clickOven(${i})" style="width:160px; height:160px; border-width:4px;">
-                    <div class="sauce" style="background:${sColor}"></div>
-                    ${tops}
-                </div>
-            `;
-
-            if (p.state === 'BAKING') {
-                html += `<div class="oven-timer">${Math.floor(p.bakeTime)}s</div>`;
-            } else {
-                html += `<div class="oven-timer" style="background:#27ae60">KLAAR</div>`;
-                html += `<div class="oven-temp-gauge"><div class="oven-temp-fill" style="height:${p.heat}%"></div></div>`;
-            }
-            if (p.order.special) html += `<div style="position:absolute; top:35px; right:10px; font-size:1.5rem;">⚠️</div>`;
-
+            html += `</div>`;
+            if(p.state === 'BAKING') html += `<div style="color:white; z-index:10; position:absolute;">${Math.floor(p.bakeTime)}s</div><div class="oven-fire"></div>`;
+            else html += `<div style="color:#2ecc71; z-index:10; position:absolute; font-weight:bold; background:rgba(0,0,0,0.5); padding:2px;">KLAAR</div>`;
             el.innerHTML = html;
         }
 
         function clickOven(i) {
             const p = GAME.ovenSlots[i];
             if (!p) return;
-
-            // Oven Interaction (Balance Method challenge)
-            if (p.state === 'BAKING') {
-                openMathChallenge(i);
-                return;
-            }
-
-            if (p.state !== 'BAKED') return;
-
-            if (GAME.cuttingPizza) { alert("Maak de snijplank eerst leeg!"); return; }
-
-            GAME.cuttingPizza = p;
-            GAME.ovenSlots[i] = null;
-
-            // Init Cut State
-            GAME.cutLines = []; GAME.selectedSlices = []; GAME.isSelecting = false;
-
-            // Switch
-            renderOvenSlot(i);
-            switchStation('cutting');
-            updateBadges();
+            if (p.state === 'BAKING') { openMathChallenge(i); return; }
+            if (GAME.cuttingPizza) { alert("Snijplank is bezet!"); return; }
+            GAME.cuttingPizza = p; GAME.ovenSlots[i] = null;
+            switchStation('cutting'); updateBadges();
         }
 
-        // --- MATH CHALLENGE ---
+        // --- MATH BOOST ---
         function openMathChallenge(i) {
             GAME.activeOvenSlot = i;
-            const target = Math.floor(Math.random() * 8) + 2;
+            const target = Math.floor(Math.random() * 8) + 4;
             GAME.currentMathAnswer = target;
-            const eq = generateEquation(target);
-
-            document.getElementById('math-problem').textContent = eq.question;
-            const inp = document.getElementById('math-answer');
-            inp.value = '';
-            inp.onkeydown = (e) => { if (e.key === 'Enter') submitMath(); };
-            document.getElementById('math-overlay').classList.add('visible');
-            inp.focus();
+            const a = Math.floor(Math.random()*3)+1;
+            document.getElementById('math-problem').textContent = `${a}x = ${a*target}`;
+            document.getElementById('math-overlay').style.display='flex';
         }
-
-        function closeMath() {
-            document.getElementById('math-overlay').classList.remove('visible');
-            GAME.activeOvenSlot = null;
-        }
-
         function submitMath() {
-            const val = parseInt(document.getElementById('math-answer').value);
-            if (isNaN(val)) return;
-
-            if (val === GAME.currentMathAnswer) {
-                // Correct!
-                if (GAME.activeOvenSlot !== null && GAME.ovenSlots[GAME.activeOvenSlot]) {
-                    GAME.ovenSlots[GAME.activeOvenSlot].bakeTime += 5; // +5s boost
-                }
+            if(parseInt(document.getElementById('math-answer').value) === GAME.currentMathAnswer) {
+                if(GAME.ovenSlots[GAME.activeOvenSlot]) GAME.ovenSlots[GAME.activeOvenSlot].bakeTime += 5;
                 closeMath();
-            } else {
-                // Wrong
-                document.getElementById('math-answer').style.borderColor = 'red';
-                setTimeout(() => document.getElementById('math-answer').style.borderColor = '#ccc', 500);
-            }
+            } else { alert("Fout!"); }
         }
+        function closeMath() { document.getElementById('math-overlay').style.display='none'; }
 
         // --- CUTTING ---
         function switchStation(s) {
             document.querySelectorAll('.station').forEach(e => e.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(e => e.classList.remove('active'));
             document.getElementById('station-' + s).classList.add('active');
-
-            const idx = ['prep', 'oven', 'cutting'].indexOf(s);
-            document.querySelectorAll('.nav-btn')[idx].classList.add('active');
-
+            // Update active nav button (simple index map based on order in HTML)
+            if(s==='prep') document.querySelectorAll('.nav-btn')[0].classList.add('active');
+            if(s==='oven') document.querySelectorAll('.nav-btn')[1].classList.add('active');
+            if(s==='cutting') document.querySelectorAll('.nav-btn')[2].classList.add('active');
+            
             if (s === 'cutting') renderCutting();
         }
         function updateBadges() {
             const n = GAME.ovenSlots.filter(p => p && p.state === 'BAKED').length;
-            const b = document.getElementById('badge-oven');
-            b.textContent = n; b.classList.toggle('visible', n > 0);
+            document.getElementById('badge-oven').classList.toggle('visible', n > 0);
+            document.getElementById('badge-oven').textContent = n;
         }
 
-        // Cutting Visuals
         const cutOverlay = document.getElementById('cut-overlay');
         function renderCutting() {
             const area = document.getElementById('cutting-board-area');
             const msg = document.getElementById('cutting-empty-msg');
-
             if (!GAME.cuttingPizza) { area.style.display = 'none'; msg.style.display = 'block'; return; }
             area.style.display = 'flex'; msg.style.display = 'none';
-
             const p = GAME.cuttingPizza;
-            document.getElementById('cut-ticket-display').innerHTML = `
-                Opdracht:<br>
-                Snij in <b>${p.order.reqDenom}</b> stukken<br>
-                Kies <b>${p.order.reqNum}</b> deel.
-            `;
+            
+            document.getElementById('cut-ticket-display').innerHTML = `Snij in <b>${p.order.reqDenom}</b>, kies <b>${p.order.reqNum}</b>.`;
 
             // Render Pizza
-            const s = document.getElementById('cut-sauce');
-            const c = document.getElementById('cut-toppings-container');
-            s.style.backgroundColor = p.sauce ? ITEMS[p.sauce].color : '#e6e6e6';
-            c.innerHTML = '';
+            const s = document.getElementById('cut-sauce'); s.style.backgroundColor = p.sauce ? ITEMS[p.sauce].color : '#e6e6e6';
+            const c = document.getElementById('cut-toppings-container'); c.innerHTML = '';
             p.toppings.forEach(t => {
                 const el = document.createElement('div'); el.className = 'topping-item';
                 el.textContent = ITEMS[t.type].icon;
                 el.style.left = t.x + 'px'; el.style.top = t.y + 'px';
-                el.style.transform = `translate(-50%,-50%) rotate(${Math.random() * 360}deg)`;
+                el.style.transform = 'translate(-50%,-50%)';
                 c.appendChild(el);
             });
 
-            renderCutOverlay();
-            updateCutControls();
+            renderCutOverlay(); updateCutControls();
 
-            // Bind Events
-            if (!GAME.isSelecting) {
+            // Bind Events (use scaling aware coords)
+             if (!GAME.isSelecting) {
                 cutOverlay.onmousedown = cutDown;
                 window.onmousemove = cutMove;
                 window.onmouseup = cutUp;
+                cutOverlay.ontouchstart = cutDown;
+                window.ontouchmove = cutMove;
+                window.ontouchend = cutUp;
             } else {
                 cutOverlay.onmousedown = null; window.onmousemove = null; window.onmouseup = null;
+                cutOverlay.ontouchstart = null; window.ontouchmove = null; window.ontouchend = null;
             }
+        }
+        
+        function getLocalCoords(e) {
+            const r = cutOverlay.getBoundingClientRect();
+            let cx = e.clientX; let cy = e.clientY;
+            if(e.changedTouches && e.changedTouches.length>0) {
+                 cx = e.changedTouches[0].clientX; cy = e.changedTouches[0].clientY;
+            }
+            return { x: cx - r.left, y: cy - r.top }; // SVG coords are 1:1 with CSS pixels usually in this setup
+        }
+
+        function cutDown(e) { if (GAME.isSelecting) return; GAME.cutState.dragging = true; GAME.cutState.start = getLocalCoords(e); GAME.cutState.curr = GAME.cutState.start; }
+        function cutMove(e) { if (!GAME.cutState.dragging) return; e.preventDefault(); GAME.cutState.curr = getLocalCoords(e); renderCutOverlay(); }
+        function cutUp(e) {
+            if (!GAME.cutState.dragging) return;
+            GAME.cutState.dragging = false;
+            const dx = GAME.cutState.curr.x - GAME.cutState.start.x; const dy = GAME.cutState.curr.y - GAME.cutState.start.y;
+            if (Math.hypot(dx,dy) > 30) {
+                const angle = Math.atan2(dy, dx);
+                GAME.cutLines.push(angle);
+            }
+            renderCutOverlay();
         }
 
         function renderCutOverlay() {
             cutOverlay.innerHTML = '';
-            // Finals
+             // Render existing cuts
             GAME.cutLines.forEach(a => {
-                // Center is 200,200 (Container is 400x400)
-                const cx = 200, cy = 200, r = 200;
-                const x1 = cx + r * Math.cos(a); const y1 = cy + r * Math.sin(a);
-                const x2 = cx - r * Math.cos(a); const y2 = cy - r * Math.sin(a);
-                drawLine(x1, y1, x2, y2, 'cut-line-visual');
+                const cx = 180, cy = 180, r = 180;
+                const x1 = cx + r*Math.cos(a), y1 = cy + r*Math.sin(a), x2 = cx - r*Math.cos(a), y2 = cy - r*Math.sin(a);
+                drawLine(x1,y1,x2,y2, 'cut-line-visual');
             });
-            // Drag
-            if (GAME.cutState.dragging) {
-                drawLine(GAME.cutState.start.x, GAME.cutState.start.y, GAME.cutState.curr.x, GAME.cutState.curr.y, 'cut-line-visual', 'orange');
+            if(GAME.cutState.dragging) {
+                const s = GAME.cutState;
+                drawLine(s.start.x, s.start.y, s.curr.x, s.curr.y, 'cut-line-visual', 'orange');
             }
-            // Slices (if selecting)
-            if (GAME.isSelecting) renderSlices();
+            if(GAME.isSelecting) renderSlices();
         }
 
-        function drawLine(x1, y1, x2, y2, cls, stroke) {
+        function drawLine(x1,y1,x2,y2,cls,stroke) {
             const l = document.createElementNS("http://www.w3.org/2000/svg", "line");
             l.setAttribute('x1', x1); l.setAttribute('y1', y1); l.setAttribute('x2', x2); l.setAttribute('y2', y2);
-            l.setAttribute('class', cls);
-            if (stroke) l.setAttribute('stroke', stroke);
+            l.setAttribute('class', cls); if(stroke) l.setAttribute('stroke', stroke);
             cutOverlay.appendChild(l);
         }
 
-        function cutDown(e) {
-            if (GAME.isSelecting) return;
-            const r = cutOverlay.getBoundingClientRect();
-            GAME.cutState.dragging = true;
-            GAME.cutState.start = { x: e.clientX - r.left, y: e.clientY - r.top };
-            GAME.cutState.curr = GAME.cutState.start;
-        }
-        function cutMove(e) {
-            if (!GAME.cutState.dragging) return;
-            const r = cutOverlay.getBoundingClientRect();
-            GAME.cutState.curr = { x: e.clientX - r.left, y: e.clientY - r.top };
-            renderCutOverlay();
-        }
-        function cutUp(e) {
-            if (!GAME.cutState.dragging) return;
-            GAME.cutState.dragging = false;
-            // Add Line
-            const dx = GAME.cutState.curr.x - GAME.cutState.start.x;
-            const dy = GAME.cutState.curr.y - GAME.cutState.start.y;
-            if (Math.sqrt(dx * dx + dy * dy) > 50) {
-                const angle = Math.atan2(dy, dx);
-                // Snap to unique
-                const exists = GAME.cutLines.some(a => Math.abs(a - angle) < 0.2 || Math.abs(a - angle - Math.PI) < 0.2);
-                if (!exists) GAME.cutLines.push(angle);
-            }
-            renderCutOverlay();
-        }
-
-        function renderSlices() {
-            // Sort angles
+         function renderSlices() {
+            // Calculate slices from random cuts is hard geometry. 
+            // Simplified: Sort angles, assume center-crossing lines.
+            // 2 lines = 4 slices.
             let angles = [];
             GAME.cutLines.forEach(a => {
-                let n = a % (2 * Math.PI); if (n < 0) n += 2 * Math.PI;
-                angles.push(n); angles.push((n + Math.PI) % (2 * Math.PI));
+                 let n = a % (2*Math.PI); if(n<0) n+=2*Math.PI;
+                 angles.push(n); angles.push((n+Math.PI)%(2*Math.PI));
             });
-            angles.sort((a, b) => a - b);
-            if (angles.length === 0) angles = [0, 2 * Math.PI]; else angles.push(angles[0] + 2 * Math.PI);
-
-            const cx = 200, cy = 200, r = 190;
-
-            for (let i = 0; i < angles.length - 1; i++) {
-                const a1 = angles[i]; const a2 = angles[i + 1];
-                const x1 = cx + r * Math.cos(a1); const y1 = cy + r * Math.sin(a1);
-                const x2 = cx + r * Math.cos(a2); const y2 = cy + r * Math.sin(a2);
-                const big = (a2 - a1) > Math.PI ? 1 : 0;
-
-                const d = `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${big} 1 ${x2} ${y2} Z`;
-
+            angles.sort((a,b)=>a-b);
+            if(angles.length===0) angles=[0, 2*Math.PI]; else angles.push(angles[0]+2*Math.PI);
+            
+            const cx=180, cy=180, r=180;
+            for(let i=0; i<angles.length-1; i++) {
+                const a1=angles[i], a2=angles[i+1];
+                const x1=cx+r*Math.cos(a1), y1=cy+r*Math.sin(a1), x2=cx+r*Math.cos(a2), y2=cy+r*Math.sin(a2);
+                const large = (a2-a1)>Math.PI?1:0;
                 const p = document.createElementNS("http://www.w3.org/2000/svg", "path");
-                p.setAttribute('d', d);
-                p.setAttribute('class', 'slice-wedge ' + (GAME.selectedSlices.includes(i) ? 'selected' : ''));
-                p.onmousedown = (ev) => { ev.stopPropagation(); toggleSlice(i); };
+                p.setAttribute('d', `M ${cx} ${cy} L ${x1} ${y1} A ${r} ${r} 0 ${large} 1 ${x2} ${y2} Z`);
+                p.setAttribute('class', 'slice-wedge ' + (GAME.selectedSlices.includes(i)?'selected':''));
+                p.onmousedown = (e)=>{ e.stopPropagation(); toggleSlice(i); };
                 cutOverlay.appendChild(p);
             }
         }
-
-        function toggleSlice(i) {
-            const idx = GAME.selectedSlices.indexOf(i);
-            if (idx >= 0) GAME.selectedSlices.splice(idx, 1); else GAME.selectedSlices.push(i);
-            renderCutOverlay();
-        }
+        function toggleSlice(i){ const idx=GAME.selectedSlices.indexOf(i); if(idx>=0)GAME.selectedSlices.splice(idx,1);else GAME.selectedSlices.push(i); renderCutOverlay(); }
 
         function updateCutControls() {
-            const s = GAME.isSelecting;
-            document.getElementById('cut-instructions').textContent = s ? "Klik op de stukken om te selecteren." : "Sleep lijnen om de pizza te snijden.";
-            document.getElementById('btn-confirm-cut').style.display = s ? 'none' : 'block';
-            document.getElementById('final-serve-btn').style.display = s ? 'block' : 'none';
+            document.getElementById('cut-instructions').textContent = GAME.isSelecting?"Klik op stukken.":"Sleep lijnen.";
+            document.getElementById('btn-confirm-cut').style.display=GAME.isSelecting?'none':'block';
+            document.getElementById('final-serve-btn').style.display=GAME.isSelecting?'block':'none';
         }
-        function finishCuttingMode() { GAME.isSelecting = true; updateCutControls(); renderCutOverlay(); }
-        function resetCuts() { GAME.cutLines = []; GAME.selectedSlices = []; GAME.isSelecting = false; updateCutControls(); renderCutOverlay(); }
+        function finishCuttingMode() { GAME.isSelecting=true; updateCutControls(); renderCutOverlay(); }
+        function resetCuts() { GAME.cutLines=[]; GAME.selectedSlices=[]; GAME.isSelecting=false; updateCutControls(); renderCutOverlay(); }
 
-        // --- SERVE & SCORE ---
         function serveFinal() {
-            const p = GAME.cuttingPizza;
-            const o = p.order;
+            const p = GAME.cuttingPizza; const o = p.order;
             let log = ''; let score = 0; let perfect = true;
 
-            // 1. Sauce
-            if (p.sauce !== o.reqSauce) { log += `❌ Verkeerde saus.<br>`; perfect = false; }
-
-            // 2. Count
-            const count = p.toppings.filter(t => t.type === o.reqTop).length;
-            if (count !== o.targetCount) { log += `❌ Toppings: ${count} ipv ${o.targetCount}.<br>`; perfect = false; }
-            if (p.toppings.length !== count) { log += `❌ Verkeerde ingrediënten.<br>`; perfect = false; }
-
-            // 3. Bake (Crispy?)
-            if (o.special === 'extra_crispy') {
-                if (p.bakeTime < 20) { log += `⚠️ Niet krokant genoeg!<br>`; perfect = false; }
-                else { log += `✅ Lekker krokant!<br>`; score += 5; }
-            }
-
-            // 4. Cuts & Fractions
+            // Simple checks
+            if(p.sauce !== o.reqSauce) { perfect=false; log+='❌ Saus gemist.<br>'; }
+            const cnt = p.toppings.length;
+            if(cnt !== o.targetCount) { perfect=false; log+=`❌ ${cnt} toppings ipv ${o.targetCount}.<br>`; }
+            
+            // Fraction check
             const totalSlices = GAME.cutLines.length * 2 || 1;
             const picked = GAME.selectedSlices.length;
+            if(Math.abs((picked/totalSlices) - (o.reqNum/o.reqDenom)) < 0.01) {
+                score += 20; log+='✅ Portie correct!<br>';
+            } else { perfect=false; log+='❌ Portie fout.<br>'; }
 
-            const reqVal = o.reqNum / o.reqDenom;
-            const actVal = picked / totalSlices;
-
-            if (Math.abs(reqVal - actVal) < 0.01) {
-                // Math is correct
-                if (totalSlices !== o.reqDenom) {
-                    log += `⚠️ Portie klopt, maar ik wilde ${o.reqDenom} stukken (jij gaf ${totalSlices}).<br>`;
-                    score += 5; // Partial points
-                } else {
-                    log += `✅ Perfect gesneden!<br>`;
-                    score += 15;
-                }
-            } else {
-                log += `❌ Verkeerde portie (${picked}/${totalSlices} ipv ${o.reqNum}/${o.reqDenom}).<br>`;
-                perfect = false;
-            }
-
-            if (perfect) {
-                score += 20;
-                document.getElementById('res-title').textContent = "Uitmuntend!";
-                document.getElementById('res-score').style.color = "var(--success)";
-            } else {
-                document.getElementById('res-title').textContent = "Kan beter...";
-                document.getElementById('res-score').style.color = score > 0 ? "orange" : "var(--danger)";
-            }
-
-            // Heat bonus
-            if (p.heat > 70) { score += 5; log += `🔥 Lekker warm (+5)`; }
+            if(perfect) { score += 10; document.getElementById('res-title').textContent="Perfect!"; }
+            else { document.getElementById('res-title').textContent="Oei..."; }
 
             GAME.money += score;
             document.getElementById('score-display').textContent = GAME.money;
             document.getElementById('res-desc').innerHTML = log;
             document.getElementById('res-score').textContent = `+€${score}`;
-            document.getElementById('res-heat').style.width = p.heat + "%";
-            document.getElementById('feedback-overlay').classList.add('visible');
-
-            // Day Prog
-            if (GAME.money > GAME.day * 150) { // Threshhold
-                GAME.day++;
-                document.getElementById('day-display').textContent = GAME.day;
-            }
+            document.getElementById('feedback-overlay').style.display='flex';
+            
+            // Progressive
+            if(GAME.money > GAME.day * 120) { GAME.day++; }
             GAME.cuttingPizza = null;
         }
 
         function closeFeedback() {
-            document.getElementById('feedback-overlay').classList.remove('visible');
-            resetCuts();
-            renderCutting();
-            switchStation('prep');
-            if (GAME.cuttingPizza === null && GAME.orderQueue.length === 0 && GAME.day > 1 && Math.random() > 0.8) {
-                // Random check to show day screen? No, stick to money threshold above
-            }
-            // Should we trigger day screen if day increased?
-            const dDisp = parseInt(document.getElementById('day-display').textContent);
-            if (dDisp > GAME.day) { // Caught up?
-                // already handled
-            }
-            // Logic fix: The Day display updated in serveFinal. Check if we just leveled up logic?
-            // Since I stored GAME.day++, if items for new day exist, show screen?
-            const newItems = Object.values(ITEMS).filter(i => i.day === GAME.day);
-            if (newItems.length > 0 && document.getElementById('day-title').textContent !== `Dag ${GAME.day}`) {
-                showDayStart();
-            }
+            document.getElementById('feedback-overlay').style.display='none';
+            resetCuts(); renderCutting(); switchStation('prep');
         }
-
-        init();
 
     </script>
 </body>
-
 </html>
